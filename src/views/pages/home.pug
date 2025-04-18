@@ -1,0 +1,290 @@
+extends ../layouts/main
+
+block content
+  // Hero Section
+  .hero-section.position-relative.mb-5(style="height: 700px; overflow: hidden")
+    img.w-100.h-100.object-fit-cover.position-absolute.top-0.start-0(src="/images/banner.png", alt="Khách sạn 3TL", style="z-index: 0; transform: scale(1.1); transition: transform 10s ease")
+    .hero-overlay.position-absolute.top-0.start-0.w-100.h-100.bg-dark(style="opacity: 0.4; z-index: 1")
+    .container.position-relative(style="z-index: 2")
+      .row.align-items-center.h-100.py-5
+        .col-lg-8.col-md-10.mx-auto.text-white.text-center
+          h1.display-3.fw-bold.mb-4(style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5)") Chào mừng đến với Khách sạn 3TL
+          p.lead.mb-4(style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5)") Trải nghiệm dịch vụ lưu trú tuyệt vời với giá cả phải chăng
+          .d-grid.gap-3.d-md-flex.justify-content-center
+            a.btn.btn-primary.btn-lg.px-5.rounded-pill.shadow-sm.fw-bold(href="/rooms", style="transition: all 0.3s ease") Xem phòng
+            a.btn.btn-light.btn-lg.px-5.rounded-pill.shadow-sm(href="/about", style="transition: all 0.3s ease") Tìm hiểu thêm
+
+  // Search Section
+  .search-section.bg-white.p-5.rounded-3.shadow.mx-3.mx-md-auto(style="margin-top: -50px; max-width: 1100px; position: relative; z-index: 3")
+    h2.text-center.mb-4.fw-bold Tìm phòng phù hợp
+    form(action="/rooms/search", method="GET")
+      .row.g-3
+        .col-md-3
+          label.form-label(for="checkIn") Ngày nhận phòng
+          input.form-control#checkIn(type="date", name="checkIn", required)
+        .col-md-3
+          label.form-label(for="checkOut") Ngày trả phòng
+          input.form-control#checkOut(type="date", name="checkOut", required)
+        .col-md-2
+          label.form-label(for="guests") Số khách
+          select.form-select#guests(name="guests")
+            option(value="1") 1 người
+            option(value="2", selected) 2 người
+            option(value="3") 3 người
+            option(value="4") 4 người
+        .col-md-2
+          label.form-label(for="roomType") Loại phòng
+          select.form-select#roomType(name="roomType")
+            option(value="") Tất cả
+            option(value="standard") Standard
+            option(value="deluxe") Deluxe
+            option(value="suite") Suite
+        .col-md-2.d-flex.align-items-end
+          button.btn.btn-primary.w-100(type="submit") Tìm kiếm
+  
+  // Featured Rooms
+  .featured-rooms.py-5.mb-5
+    .container
+      h2.text-center.mb-5.fw-bold.position-relative
+        span.position-relative.z-2 Phòng nổi bật
+        .decoration-line.position-absolute.start-50.translate-middle-x(style="width: 80px; height: 3px; background: var(--bs-primary); bottom: -15px")
+      
+      .row
+        if featuredRooms && featuredRooms.length > 0
+          each room, index in featuredRooms.slice(0, 3)
+            .col-md-4.mb-4
+              .card.h-100.shadow-sm.border-0.room-card
+                .position-relative.overflow-hidden
+                  img.card-img-top(src=room.image || "/images/room-placeholder.jpg", alt=room.type)
+                  .position-absolute.top-0.end-0.bg-warning.text-dark.px-3.py-1.m-2.rounded-pill.fw-bold
+                    i.bi.bi-star-fill.me-1
+                    | #{room.avgRating ? room.avgRating.toFixed(1) : '5.0'}
+                .card-body
+                  h4.card-title.fw-bold #{room.type}
+                  .d-flex.align-items-center.mb-3
+                    if room.avgRating > 0
+                      .me-2
+                        - for (var i = 0; i < Math.floor(room.avgRating); i++)
+                          i.bi.bi-star-fill.text-warning
+                        - for (var i = 0; i < 5 - Math.floor(room.avgRating); i++)
+                          i.bi.bi-star.text-warning
+                      small.text-muted (#{room.reviewCount || 0} đánh giá)
+                  
+                  .d-flex.justify-content-between.align-items-center.mb-3
+                    p.card-text.text-primary.fw-bold.fs-5.mb-0 #{formatCurrency ? formatCurrency(room.price) : room.price}
+                    span.text-muted.small /đêm
+                  
+                  .room-features.d-flex.flex-wrap.mb-3
+                    .feature.me-3.mb-2
+                      i.bi.bi-people.me-1
+                      | #{room.capacity || 2} người
+                    .feature.me-3.mb-2
+                      i.bi.bi-rulers.me-1
+                      | #{room.size || 25}m²
+                    .feature.mb-2
+                      i.bi.bi-lightning.me-1
+                      | #{room.amenities && room.amenities.includes('aircon') ? 'Máy lạnh' : 'Quạt trần'}
+                  
+                  p.card-text.small.text-muted #{room.description ? room.description.substring(0, 100) + '...' : 'Phòng tiện nghi với đầy đủ tiện ích hiện đại, không gian thoáng đãng và thoải mái.'}
+                
+                .card-footer.bg-white.border-top-0.pt-0
+                  .d-grid.gap-2
+                    a.btn.btn-outline-primary.w-100(href=`/rooms/${room.id}`) 
+                      i.bi.bi-info-circle.me-1
+                      | Xem chi tiết
+                    a.btn.btn-primary.w-100(href=`/booking/create?roomId=${room.id}`) 
+                      i.bi.bi-calendar-check.me-1
+                      | Đặt ngay
+        else
+          .col-12
+            .alert.alert-info.text-center Không có phòng nổi bật
+      
+      .text-center.mt-4
+        a.btn.btn-outline-primary.px-4(href="/rooms")
+          i.bi.bi-grid.me-2
+          | Xem tất cả phòng
+  
+
+  
+  // Services Section
+  .services-section.py-5.mb-5
+    .container
+      h2.text-center.mb-5.fw-bold.position-relative
+        span.position-relative.z-2 Dịch vụ của chúng tôi
+        .decoration-line.position-absolute.start-50.translate-middle-x(style="width: 80px; height: 3px; background: var(--bs-primary); bottom: -15px")
+      .row
+        .col-lg-3.col-md-6.mb-4
+          .card.text-center.h-100
+            .card-body
+              i.bi.bi-wifi.display-4.mb-4
+              h5.card-title Wi-Fi miễn phí
+              p.card-text Kết nối internet tốc độ cao miễn phí trong toàn bộ khách sạn.
+
+        .col-lg-3.col-md-6.mb-4
+          .card.text-center.h-100
+            .card-body
+              i.bi.bi-cup-hot.display-4.mb-4
+              h5.card-title Nhà hàng & Bar
+              p.card-text Thưởng thức ẩm thực đa dạng với các món ăn Á - Âu đặc sắc.
+
+        .col-lg-3.col-md-6.mb-4
+          .card.text-center.h-100
+            .card-body
+              i.bi.bi-water.display-4.mb-4
+              h5.card-title Hồ bơi
+              p.card-text Thư giãn tại hồ bơi ngoài trời với tầm nhìn panorama tuyệt đẹp.
+
+        .col-lg-3.col-md-6.mb-4
+          .card.text-center.h-100
+            .card-body
+              i.bi.bi-car-front.display-4.mb-4
+              h5.card-title Đưa đón sân bay
+              p.card-text Dịch vụ đưa đón sân bay theo yêu cầu với đội ngũ tài xế chuyên nghiệp.
+
+  .testimonials-section.bg-light.py-5.mb-5
+    .container
+      h2.text-center.mb-4 Khách hàng nói gì về chúng tôi
+      .row
+        .col-md-4.mb-4
+          .card.h-100
+            .card-body
+              .d-flex.mb-3
+                img.rounded-circle.me-3(src="/images/avatar1.svg", alt="Avatar", width="50", height="50")
+                div
+                  h5.mb-0 Nguyễn Văn A
+                  .text-warning
+                    i.fas.fa-star
+                    i.fas.fa-star
+                    i.fas.fa-star
+                    i.fas.fa-star
+                    i.fas.fa-star
+              p.card-text "Dịch vụ tuyệt vời, nhân viên thân thiện và nhiệt tình. Phòng sạch sẽ và thoải mái. Tôi sẽ quay lại lần sau!"
+        
+        .col-md-4.mb-4
+          .card.h-100
+            .card-body
+              .d-flex.mb-3
+                img.rounded-circle.me-3(src="/images/avatar2.svg", alt="Avatar", width="50", height="50")
+                div
+                  h5.mb-0 Trần Thị B
+                  .text-warning
+                    i.fas.fa-star
+                    i.fas.fa-star
+                    i.fas.fa-star
+                    i.fas.fa-star
+                    i.far.fa-star
+              p.card-text "Vị trí thuận tiện, gần trung tâm và dễ dàng di chuyển. Bữa sáng ngon và đa dạng. Giá cả hợp lý."
+        
+        .col-md-4.mb-4
+          .card.h-100
+            .card-body
+              .d-flex.mb-3
+                img.rounded-circle.me-3(src="/images/avatar2.svg", alt="Avatar", width="50", height="50")
+                div
+                  h5.mb-0 Lê Văn C
+                  .text-warning
+                    i.fas.fa-star
+                    i.fas.fa-star
+                    i.fas.fa-star
+                    i.fas.fa-star
+                    i.fas.fa-star
+              p.card-text "Một trong những khách sạn tốt nhất tôi từng ở. Phòng rộng rãi, sạch sẽ và đầy đủ tiện nghi. Nhân viên rất chuyên nghiệp."
+  
+  // About Us Section
+  .about-section.mb-5
+    .container
+      .row.align-items-center
+        .col-md-6.mb-4.mb-md-0
+          img.img-fluid.rounded.shadow(src="/images/hotel-lobby.png", alt="Khách sạn 3TL Lobby")
+        .col-md-6
+          h2.mb-4 Về Khách sạn 3TL
+          p.lead Khách sạn 3TL là điểm đến lý tưởng cho kỳ nghỉ của bạn tại thành phố.
+          p Với vị trí trung tâm thuận tiện, chúng tôi cung cấp các phòng nghỉ sang trọng, nhà hàng phục vụ ẩm thực đa dạng, và nhiều tiện ích giải trí tiệu.
+          p Đội ngũ nhân viên chuyên nghiệp và thân thiện của chúng tôi luôn sẵn sàng phục vụ để đảm bảo kỳ nghỉ của bạn thật thoải mái và đáng nhớ.
+          a.btn.btn-outline-primary.mt-3(href="/about") Tìm hiểu thêm
+  
+  // Special Offers
+  .offers-section.mb-5
+    .container
+      h2.text-center.mb-4 Ưu đãi đặc biệt
+      .row
+        .col-md-6.mb-4
+          .card.h-100
+            .card-body
+              h5.card-title.text-primary Ưu đãi cuối tuần
+              p.card-text Giảm 15% cho các đặt phòng vào cuối tuần (Thứ 6, 7, Chủ nhật).
+              p.card-text.small.text-muted Áp dụng từ 01/06/2023 đến 31/08/2023
+              a.btn.btn-sm.btn-outline-primary(href="/promotions/weekend") Xem chi tiết
+        
+        .col-md-6.mb-4
+          .card.h-100
+            .card-body
+              h5.card-title.text-primary Ở dài ngày - Giảm sâu
+              p.card-text Giảm 20% cho đặt phòng từ 5 đêm trở lên.
+              p.card-text.small.text-muted Áp dụng cho tất cả các loại phòng
+              a.btn.btn-sm.btn-outline-primary(href="/promotions/longstay") Xem chi tiết
+  
+  // Newsletter
+  .newsletter-section.bg-primary.text-white.py-5.mb-5
+    .container.text-center
+      h2.mb-4 Đăng ký nhận thông tin ưu đãi
+      p.mb-4 Nhận thông tin về các chương trình khuyến mãi và ưu đãi đặc biệt từ Khách sạn 3TL
+      .row.justify-content-center
+        .col-md-6
+          form.d-flex
+            input.form-control.me-2(type="email", placeholder="Nhập email của bạn", required)
+            button.btn.btn-light(type="submit") Đăng ký
+
+block scripts
+  script.
+    // Set default dates for search form
+    document.addEventListener('DOMContentLoaded', function() {
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      
+      const checkIn = document.getElementById('checkIn');
+      const checkOut = document.getElementById('checkOut');
+      
+      checkIn.min = today.toISOString().split('T')[0];
+      checkIn.value = today.toISOString().split('T')[0];
+      
+      checkOut.min = tomorrow.toISOString().split('T')[0];
+      checkOut.value = tomorrow.toISOString().split('T')[0];
+      
+      // Ensure checkout date is always after checkin date
+      checkIn.addEventListener('change', function() {
+        const newCheckInDate = new Date(this.value);
+        const newCheckOutDate = new Date(newCheckInDate);
+        newCheckOutDate.setDate(newCheckOutDate.getDate() + 1);
+        
+        checkOut.min = newCheckOutDate.toISOString().split('T')[0];
+        if (new Date(checkOut.value) <= new Date(this.value)) {
+          checkOut.value = newCheckOutDate.toISOString().split('T')[0];
+        }
+      });
+      
+      // Add validation for form submission
+      const searchForm = document.querySelector('.search-section form');
+      searchForm.addEventListener('submit', function(event) {
+        const checkInDate = new Date(checkIn.value);
+        const checkOutDate = new Date(checkOut.value);
+        
+        if (checkOutDate <= checkInDate) {
+          event.preventDefault();
+          alert('Ngày trả phòng phải sau ngày nhận phòng');
+          return false;
+        }
+        
+        // Calculate number of days for the stay
+        const diffTime = Math.abs(checkOutDate - checkInDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        // Add hidden field with number of days
+        const daysInput = document.createElement('input');
+        daysInput.type = 'hidden';
+        daysInput.name = 'days';
+        daysInput.value = diffDays;
+        this.appendChild(daysInput);
+      });
+    });

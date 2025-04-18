@@ -1,0 +1,37 @@
+extends ../layouts/main
+
+block content
+  .container.my-5
+    .row.justify-content-center
+      .col-md-6
+        .card.shadow
+          .card-header.bg-primary.text-white.text-center
+            h4.mb-0 Thông tin cá nhân
+          .card-body
+            if success && success.length > 0
+              .alert.alert-success
+                = success
+            if error && error.length > 0
+              .alert.alert-danger
+                = error
+                
+            .mb-3
+              strong Họ tên:
+              p= user.name
+            
+            .mb-3
+              strong Email:
+              p= user.email
+            
+            .mb-3
+              strong Số điện thoại:
+              p= user.phone
+            
+            .mb-3
+              strong Vai trò:
+              p= user.role === 'admin' ? 'Quản trị viên' : 'Khách hàng'
+          
+          .card-footer.text-center
+            a.btn.btn-primary(href="/user/edit-profile") Chỉnh sửa thông tin
+      
+    

@@ -1,0 +1,210 @@
+extends ../layouts/admin
+
+block content
+  .container-fluid
+    // Page Heading
+    .d-sm-flex.align-items-center.justify-content-between.mb-4
+      h1.h3.mb-0.text-gray-800 Quản lý đánh giá
+    
+    // Content Row
+    .card.shadow.mb-4
+      .card-header.py-3.d-flex.flex-row.align-items-center.justify-content-between
+        h6.m-0.font-weight-bold.text-primary Danh sách đánh giá
+        .dropdown
+          button.btn.btn-sm.btn-primary.dropdown-toggle(type="button", id="filterDropdown", data-bs-toggle="dropdown", aria-expanded="false")
+            i.fas.fa-filter.me-1
+            | Lọc
+          ul.dropdown-menu.dropdown-menu-end(aria-labelledby="filterDropdown")
+            li
+              a.dropdown-item(href="/admin/reviews") Tất cả
+            li
+              a.dropdown-item(href="/admin/reviews?status=pending") Chờ duyệt
+            li
+              a.dropdown-item(href="/admin/reviews?status=approved") Đã duyệt
+            li
+              a.dropdown-item(href="/admin/reviews?rating=5") 5 sao
+            li
+              a.dropdown-item(href="/admin/reviews?rating=1") 1 sao
+      
+      .card-body
+        .table-responsive
+          table.table.table-bordered
+            thead
+              tr
+                th ID
+                th Phòng
+                th Khách hàng
+                th Đánh giá
+                th Nội dung
+                th Ngày tạo
+                th Trạng thái
+                th Thao tác
+            
+            tbody
+              if reviews && reviews.length > 0
+                each review in reviews
+                  tr
+                    td #{review.id}
+                    td
+                      a(href=`/room/${review.Room.id}`, target="_blank") #{review.Room.type} - #{review.Room.room_number}
+                    td
+                      a(href=`/admin/users/${review.User.id}`, target="_blank") #{review.User.name}
+                      br
+                      small.text-muted #{review.User.email}
+                    td
+                      .text-warning
+                        - for (var i = 0; i < review.rating; i++)
+                          i.fas.fa-star
+                        - for (var i = 0; i < 5 - review.rating; i++)
+                          i.far.fa-star
+                    td
+                      if review.comment.length > 100
+                        span #{review.comment.substring(0, 100)}...
+                        button.btn.btn-sm.btn-link.view-full-comment(data-comment=review.comment, data-bs-toggle="modal", data-bs-target="#viewCommentModal") Xem thêm
+                      else
+                        | #{review.comment}
+                    td #{new Date(review.createdAt).toLocaleDateString('vi-VN')}
+                    td
+                      if review.status === 'pending'
+                        span.badge.bg-warning Chờ duyệt
+                      else if review.status === 'approved'
+                        span.badge.bg-success Đã duyệt
+                      else
+                        span.badge.bg-secondary #{review.status}
+                    td
+                      .btn-group
+                        if review.status === 'pending'
+                          button.btn.btn-sm.btn-success.approve-review(data-id=review.id, title="Phê duyệt")
+                            i.fas.fa-check
+                        
+                        button.btn.btn-sm.btn-danger.delete-review(data-id=review.id, title="Xóa", data-bs-toggle="modal", data-bs-target="#deleteReviewModal")
+                          i.fas.fa-trash
+              else
+                tr
+                  td.text-center(colspan="8") Không có đánh giá nào
+        
+        // Pagination
+        if pagination && pagination.pages > 1
+          nav(aria-label="Page navigation")
+            ul.pagination.justify-content-center
+              li.page-item(class=pagination.page === 1 ? 'disabled' : '')
+                a.page-link(href=`/admin/reviews?page=${pagination.page-1}`) Trước
+              
+              - for (var i = 1; i <= pagination.pages; i++)
+                li.page-item(class=pagination.page === i ? 'active' : '')
+                  a.page-link(href=`/admin/reviews?page=${i}`) #{i}
+              
+              li.page-item(class=pagination.page === pagination.pages ? 'disabled' : '')
+                a.page-link(href=`/admin/reviews?page=${pagination.page+1}`) Sau
+  
+  // View Comment Modal
+  #viewCommentModal.modal.fade(tabindex="-1", aria-labelledby="viewCommentModalLabel", aria-hidden="true")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h5#viewCommentModalLabel.modal-title Nội dung đánh giá
+          button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
+        .modal-body
+          p#fullComment
+        .modal-footer
+          button.btn.btn-secondary(type="button", data-bs-dismiss="modal") Đóng
+  
+  // Delete Review Modal
+  #deleteReviewModal.modal.fade(tabindex="-1", aria-labelledby="deleteReviewModalLabel", aria-hidden="true")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h5#deleteReviewModalLabel.modal-title Xác nhận xóa
+          button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
+        .modal-body
+          p Bạn có chắc chắn muốn xóa đánh giá này không?
+          p.text-danger.mb-0 Hành động này không thể hoàn tác.
+        .modal-footer
+          button.btn.btn-secondary(type="button", data-bs-dismiss="modal") Hủy
+          button#confirmDeleteReview.btn.btn-danger(type="button") Xóa
+
+block scripts
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      // View full comment
+      const viewFullCommentButtons = document.querySelectorAll('.view-full-comment');
+      const fullCommentElement = document.getElementById('fullComment');
+      
+      viewFullCommentButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const comment = this.getAttribute('data-comment');
+          fullCommentElement.textContent = comment;
+        });
+      });
+      
+      // Approve review
+      const approveButtons = document.querySelectorAll('.approve-review');
+      
+      approveButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const reviewId = this.getAttribute('data-id');
+          
+          fetch(`/reviews/${reviewId}/approve`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Phê duyệt đánh giá thành công');
+              window.location.reload();
+            } else {
+              alert('Lỗi: ' + data.message);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Đã xảy ra lỗi khi phê duyệt đánh giá');
+          });
+        });
+      });
+      
+      // Delete review
+      const deleteButtons = document.querySelectorAll('.delete-review');
+      const confirmDeleteButton = document.getElementById('confirmDeleteReview');
+      
+      deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const reviewId = this.getAttribute('data-id');
+          confirmDeleteButton.setAttribute('data-id', reviewId);
+        });
+      });
+      
+      confirmDeleteButton.addEventListener('click', function() {
+        const reviewId = this.getAttribute('data-id');
+        
+        fetch(`/reviews/${reviewId}/delete`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteReviewModal'));
+            modal.hide();
+            
+            // Show success message and reload page
+            alert('Xóa đánh giá thành công');
+            window.location.reload();
+          } else {
+            alert('Lỗi: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Đã xảy ra lỗi khi xóa đánh giá');
+        });
+      });
+    });

@@ -1,0 +1,81 @@
+extends ../layouts/main
+
+block content
+  .container.py-5
+    h1.mb-4.text-center Danh sách phòng
+    
+    // Bộ lọc tìm kiếm
+    .card.mb-4.shadow-sm
+      .card-body
+        form(action="/rooms", method="GET")
+          .row.g-3
+            .col-md-3
+              label.form-label(for="roomType") Loại phòng
+              select.form-select#roomType(name="roomType")
+                option(value="") Tất cả
+                option(value="standard", selected=query && query.roomType === 'standard') Standard
+                option(value="deluxe", selected=query && query.roomType === 'deluxe') Deluxe
+                option(value="suite", selected=query && query.roomType === 'suite') Suite
+            
+            .col-md-3
+              label.form-label(for="guests") Số khách
+              select.form-select#guests(name="guests")
+                option(value="") Tất cả
+                option(value="1", selected=query && query.guests === '1') 1 người
+                option(value="2", selected=query && query.guests === '2') 2 người
+                option(value="3", selected=query && query.guests === '3') 3 người
+                option(value="4", selected=query && query.guests === '4') 4+ người
+            
+            .col-md-3
+              label.form-label(for="sort") Sắp xếp theo
+              select.form-select#sort(name="sort")
+                option(value="price_asc", selected=!query || !query.sort || query.sort === 'price_asc') Giá: Thấp đến cao
+                option(value="price_desc", selected=query && query.sort === 'price_desc') Giá: Cao đến thấp
+                option(value="rating_desc", selected=query && query.sort === 'rating_desc') Đánh giá cao nhất
+            
+            .col-md-3.d-flex.align-items-end
+              button.btn.btn-primary.w-100(type="submit") 
+                i.fas.fa-search.me-2
+                | Tìm kiếm
+    
+    // Hiển thị danh sách phòng
+    .row
+      if rooms && rooms.length > 0
+        each room in rooms
+          .col-md-4.mb-4
+            .card.h-100.shadow-sm
+               if room.image
+                   img.card-img-top(src=room.image, alt=room.type, style="height: 200px; object-fit: cover;")
+                else
+                   img.card-img-top(src="/images/room-placeholder.jpg", alt=room.type, style="height: 200px; object-fit: cover;")
+              
+              .card-body.d-flex.flex-column
+                h5.card-title= room.type
+                p.card-text= room.description || `Phòng ${room.type} tiêu chuẩn`
+                
+                .mt-auto
+                  p.mb-1
+                    strong Số người: 
+                    span= room.capacity || (room.type === 'suite' ? 4 : (room.type === 'deluxe' ? 3 : 2))
+                  
+                  if room.rating
+                    .mb-2
+                      - var rating = Math.round(room.rating)
+                      each star in Array(5).fill()
+                        if star < rating
+                          i.fas.fa-star.text-warning
+                        else
+                          i.far.fa-star.text-warning
+                      span.ms-2= `(${room.reviewCount || 0} đánh giá)`
+                  
+                  p.card-text.mb-2
+                    if room.originalPrice
+                      span.text-decoration-line-through.text-muted.me-2= formatCurrency(room.originalPrice)
+                    span.fw-bold.fs-5.text-primary= formatCurrency(room.price)
+                    span.text-muted  / đêm
+                  
+                  a.btn.btn-primary.w-100(href=`/rooms/${room.id}`) Xem chi tiết
+      else
+        .col-12
+          .alert.alert-info.text-center
+            p.mb-0 Không tìm thấy phòng nào phù hợp với tiêu chí tìm kiếm của bạn.

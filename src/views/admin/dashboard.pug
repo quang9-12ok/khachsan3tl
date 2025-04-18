@@ -1,0 +1,99 @@
+extends ../layouts/admin
+
+block content
+  .row
+    .col-md-3.mb-4
+      .card.bg-primary.text-white.h-100
+        .card-body
+          h5.card-title
+            i.fas.fa-users.me-2
+            | Người dùng
+          h2.display-4= userCount
+    
+    .col-md-3.mb-4
+      .card.bg-success.text-white.h-100
+        .card-body
+          h5.card-title
+            i.fas.fa-calendar-check.me-2
+            | Đặt phòng
+          h2.display-4= bookingCount
+    
+    .col-md-3.mb-4
+      .card.bg-warning.text-white.h-100
+        .card-body
+          h5.card-title
+            i.fas.fa-bed.me-2
+            | Phòng
+          h2.display-4= roomCount
+    
+    .col-md-3.mb-4
+      .card.bg-info.text-white.h-100
+        .card-body
+          h5.card-title
+            i.fas.fa-money-bill-wave.me-2
+            | Doanh thu
+          // Update line 35 to handle undefined totalRevenue
+          h2.display-4
+            if typeof totalRevenue !== 'undefined' && totalRevenue !== null
+              = totalRevenue.toLocaleString('vi-VN') + ' VNĐ'
+            else
+              | 0 VNĐ
+  
+  .row.mt-4
+    .col-md-8.mb-4
+      .card
+        .card-header.bg-light
+          h5.mb-0 Đặt phòng gần đây
+        .card-body
+          .table-responsive
+            table.table.table-striped
+              thead
+                tr
+                  th Mã đặt phòng
+                  th Khách hàng
+                  th Phòng
+                  th Ngày đặt
+                  th Trạng thái
+                  th Tổng tiền
+              tbody
+                if recentBookings && recentBookings.length > 0
+                  each booking in recentBookings
+                    tr
+                      td= booking.bookingCode || 'N/A'
+                      td= booking.User ? booking.User.name : 'N/A'
+                      td= booking.Room ? (booking.Room.name || booking.Room.room_number || 'N/A') : 'N/A'
+                      td
+                        if booking.createdAt
+                          - var createdDate = new Date(booking.createdAt)
+                          = createdDate instanceof Date && !isNaN(createdDate) ? createdDate.toLocaleDateString('vi-VN') : booking.createdAt
+                        else
+                          | N/A
+                      td
+                        span(class=`badge bg-${booking.status === 'completed' ? 'success' : booking.status === 'pending' ? 'warning' : 'danger'}`)= booking.status || 'N/A'
+                      td= booking.totalPrice ? booking.totalPrice.toLocaleString('vi-VN') + ' VNĐ' : 'N/A'
+                else
+                  tr
+                    td(colspan="6") Không có đặt phòng nào gần đây
+    
+    .col-md-4.mb-4
+      .card
+        .card-header.bg-light
+          h5.mb-0 Thao tác nhanh
+        .card-body
+          .d-grid.gap-3
+            a.btn.btn-primary(href="/admin/rooms")
+              i.fas.fa-bed.me-2
+              | Quản lý phòng
+            a.btn.btn-success(href="/admin/bookings")
+              i.fas.fa-calendar-check.me-2
+              | Quản lý đặt phòng
+            a.btn.btn-info(href="/admin/services")
+              i.fas.fa-concierge-bell.me-2
+              | Quản lý dịch vụ
+            a.btn.btn-warning(href="/admin/reports")
+              i.fas.fa-chart-bar.me-2
+              | Xem báo cáo
+
+block scripts
+  script.
+    // Dashboard scripts can go here

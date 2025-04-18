@@ -1,0 +1,125 @@
+extends ../layouts/admin
+
+block content
+  .container-fluid.py-4
+    .row
+      .col-12
+        .card.mb-4
+          .card-header.pb-0.d-flex.justify-content-between.align-items-center
+            h6 Quản lý người dùng
+            a.btn.btn-sm.btn-primary(href="/admin/users/create")
+              i.fas.fa-plus.me-2
+              | Thêm người dùng
+          
+          .card-body.px-0.pt-0.pb-2
+            if error && error.length > 0
+              .alert.alert-danger.mx-4
+                = error
+            if success && success.length > 0
+              .alert.alert-success.mx-4
+                = success
+                
+            .table-responsive.p-0
+              table.table.align-items-center.mb-0
+                thead
+                  tr
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 ID
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Tên
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Email
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Số điện thoại
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Vai trò
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Ngày tạo
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Thao tác
+                
+                tbody
+                  if users && users.length > 0
+                    each user in users
+                      tr
+                        td
+                          .d-flex.px-3.py-1
+                            .d-flex.flex-column.justify-content-center
+                              h6.mb-0.text-sm= user.id
+                        td
+                          .d-flex.px-3.py-1
+                            .d-flex.flex-column.justify-content-center
+                              h6.mb-0.text-sm= user.name
+                        td
+                          p.text-xs.font-weight-bold.mb-0= user.email
+                        td
+                          p.text-xs.font-weight-bold.mb-0= user.phone || 'N/A'
+                        td
+                          span(class=`badge bg-${user.role === 'admin' ? 'danger' : 'info'}`)= user.role
+                        td
+                          p.text-xs.text-secondary.mb-0= new Date(user.created_at || user.createdAt).toLocaleDateString('vi-VN')
+                        td
+                          .btn-group
+                            a.btn.btn-sm.btn-info(href=`/admin/users/${user.id}` title="Xem chi tiết")
+                              i.fas.fa-eye
+                            a.btn.btn-sm.btn-primary(href=`/admin/users/${user.id}/edit` title="Chỉnh sửa")
+                              i.fas.fa-edit
+                            button.btn.btn-sm.btn-danger.delete-user(data-id=user.id data-bs-toggle="modal" data-bs-target="#deleteUserModal" title="Xóa")
+                              i.fas.fa-trash
+                  else
+                    tr
+                      td.text-center(colspan="7") Không có người dùng nào
+
+  // Delete User Modal
+  #deleteUserModal.modal.fade(tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h5#deleteUserModalLabel.modal-title Xác nhận xóa
+          button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+        .modal-body
+          p Bạn có chắc chắn muốn xóa người dùng này không?
+        .modal-footer
+          button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Hủy
+          button#confirmDeleteUser.btn.btn-danger(type="button") Xóa
+
+block scripts
+  script.
+    // Handle delete user
+    document.addEventListener('DOMContentLoaded', function() {
+      let userId;
+      
+      // Get user ID when delete button is clicked
+      const deleteButtons = document.querySelectorAll('.delete-user');
+      deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          userId = this.getAttribute('data-id');
+        });
+      });
+      
+      // Handle confirm delete
+      const confirmDeleteButton = document.getElementById('confirmDeleteUser');
+      if (confirmDeleteButton) {
+        confirmDeleteButton.addEventListener('click', function() {
+          if (userId) {
+            // Send DELETE request
+            fetch(`/admin/users/${userId}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteUserModal'));
+                modal.hide();
+                
+                // Reload page to show updated list
+                window.location.reload();
+              } else {
+                alert(data.message || 'Đã xảy ra lỗi khi xóa người dùng');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('Đã xảy ra lỗi khi xóa người dùng');
+            });
+          }
+        });
+      }
+    });

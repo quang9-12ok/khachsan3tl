@@ -1,0 +1,48 @@
+extends ../layouts/main
+
+block content
+  .container.py-5
+    .row
+      .col-lg-8.mx-auto
+        if success && success.length > 0
+          .alert.alert-success.alert-dismissible.fade.show
+            = success
+            button.btn-close(type="button", data-bs-dismiss="alert")
+        
+        if error && error.length > 0
+          .alert.alert-danger.alert-dismissible.fade.show
+            = error
+            button.btn-close(type="button", data-bs-dismiss="alert")
+        
+        if service
+          h1.text-center.mb-4= service.name
+          
+          if service.image
+            img.img-fluid.rounded.mb-4(src=service.image, alt=service.name)
+          else
+            img.img-fluid.rounded.mb-4(src="/images/service-placeholder.jpg", alt=service.name)
+          
+          .card.mb-4
+            .card-body
+              h2.card-title.mb-3 Giới thiệu
+              p.card-text= service.description
+              
+              if service.details
+                h3.mt-4.mb-3 Chi tiết
+                p.card-text= service.details
+              
+              if service.price
+                h3.mt-4.mb-3 Giá dịch vụ
+                p.card-text.text-primary.fw-bold #{formatCurrency ? formatCurrency(service.price) : service.price.toLocaleString('vi-VN') + ' VND'}
+              
+              if service.openingHours
+                h3.mt-4.mb-3 Thời gian phục vụ
+                p.card-text= service.openingHours
+          
+          .text-center.mt-4
+            a.btn.btn-outline-primary.me-2(href="/services") Quay lại
+            a.btn.btn-primary(href="/contact") Đặt dịch vụ
+        else
+          .alert.alert-warning
+            p.mb-0 Không tìm thấy thông tin dịch vụ.
+            a.btn.btn-outline-primary.mt-3(href="/services") Quay lại danh sách dịch vụ

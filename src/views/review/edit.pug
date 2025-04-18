@@ -1,0 +1,79 @@
+extends ../layouts/main
+
+block content
+  .container.my-5
+    .row.justify-content-center
+      .col-md-8
+        .card.shadow
+          .card-header.bg-primary.text-white
+            h4.mb-0 Chỉnh sửa đánh giá
+          .card-body
+            if error && error.length > 0
+              .alert.alert-danger
+                = error
+            if success && success.length > 0
+              .alert.alert-success
+                = success
+                
+            form(action=`/reviews/${review.id}/update`, method="POST")
+              .mb-3
+                label.form-label(for="roomInfo") Phòng
+                input.form-control(type="text", id="roomInfo", value=`${booking.Room.type} - ${booking.Room.room_number}`, readonly)
+              
+              .mb-3
+                label.form-label(for="rating") Đánh giá
+                .rating-input
+                  .form-check.form-check-inline
+                    input.form-check-input(type="radio", name="rating", id="rating1", value="1", checked=review.rating === 1)
+                    label.form-check-label(for="rating1") 1
+                  .form-check.form-check-inline
+                    input.form-check-input(type="radio", name="rating", id="rating2", value="2", checked=review.rating === 2)
+                    label.form-check-label(for="rating2") 2
+                  .form-check.form-check-inline
+                    input.form-check-input(type="radio", name="rating", id="rating3", value="3", checked=review.rating === 3)
+                    label.form-check-label(for="rating3") 3
+                  .form-check.form-check-inline
+                    input.form-check-input(type="radio", name="rating", id="rating4", value="4", checked=review.rating === 4)
+                    label.form-check-label(for="rating4") 4
+                  .form-check.form-check-inline
+                    input.form-check-input(type="radio", name="rating", id="rating5", value="5", checked=review.rating === 5)
+                    label.form-check-label(for="rating5") 5
+              
+              .mb-3
+                label.form-label(for="comment") Nhận xét
+                textarea.form-control(name="comment", id="comment", rows="5", required)= review.comment
+              
+              .d-flex.justify-content-between
+                a.btn.btn-secondary(href="/bookings/my") Quay lại
+                // Add this near the form submit button
+                .d-flex.justify-content-between.mt-4
+                  button.btn.btn-primary(type="submit") Cập nhật đánh giá
+                  a.btn.btn-danger(href="#" onclick="deleteReview(event)") Xóa đánh giá
+                
+                // Add this script at the end of the page
+                script.
+                  function deleteReview(event) {
+                    event.preventDefault();
+                    if (confirm('Bạn có chắc chắn muốn xóa đánh giá này?')) {
+                      fetch(`/reviews/#{review.id}/delete`, {
+                        method: 'DELETE',
+                        headers: {
+                          'Accept': 'application/json'
+                        }
+                      })
+                      .then(response => {
+                        return response.json();
+                      })
+                      .then(data => {
+                        if (data && data.success) {
+                          window.location.href = data.redirect || '/bookings/my';
+                        } else {
+                          alert(data.message || 'Đã xảy ra lỗi khi xóa đánh giá');
+                        }
+                      })
+                      .catch(error => {
+                        console.error('Error:', error);
+                        alert('Đã xảy ra lỗi khi xóa đánh giá');
+                      });
+                    }
+                  }

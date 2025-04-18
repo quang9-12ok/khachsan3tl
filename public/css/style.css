@@ -1,0 +1,620 @@
+/* Global Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Navbar - Enhanced */
+.navbar {
+  padding: 0.5rem;
+  background: linear-gradient(to right, #1a1a1a, #2c3e50) !important;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand img {
+  height: 35px;
+  transition: all 0.3s ease;
+}
+
+.nav-link {
+  font-weight: 500;
+  padding: 0.3rem 0.8rem !important;
+  color: #ffffff !important;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #ffd700 !important;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: #ffd700;
+  transition: all 0.3s ease;
+}
+
+.nav-link.active {
+  color: #ffd700 !important;
+  font-weight: 600;
+}
+
+/* User Avatar Enhancement */
+.navbar .dropdown-toggle {
+  padding: 0.25rem 1rem;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff !important;
+}
+
+.navbar .dropdown-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.navbar .dropdown-menu {
+  border: none;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+.navbar .dropdown-item {
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.navbar .dropdown-item:hover {
+  background: rgba(13, 110, 253, 0.1);
+  transform: translateX(5px);
+}
+
+/* Hero Section */
+.hero-section {
+  padding: 5rem 0;
+  background-color: #f8f9fa;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section img {
+  animation: zoomInOut 20s ease-in-out infinite alternate;
+}
+
+@keyframes zoomInOut {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
+.hero-section .text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Search Section */
+.search-section {
+  background: white;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.search-section:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Hover Effect */
+.card {
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Rating Stars */
+.rating-stars {
+  display: inline-block;
+}
+
+.star-input {
+  display: none;
+}
+
+.star-label {
+  cursor: pointer;
+  color: #ccc;
+  font-size: 1.5rem;
+  padding: 0 0.1rem;
+}
+
+.star-input:checked ~ .star-label,
+.star-label:hover ~ .star-label,
+.star-label:hover {
+  color: #ffc107;
+}
+
+/* Form Controls */
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Buttons */
+.btn {
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+/* Logout Button */
+/* Hero Section Buttons */
+.hero-section .btn-primary {
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+.hero-section .btn-primary:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.hero-section .btn-light {
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  backdrop-filter: blur(5px);
+}
+
+.hero-section .btn-light:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+/* User Avatar in Navbar */
+.navbar .dropdown-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .dropdown-toggle::after {
+  margin-left: 0.5rem;
+}
+
+.navbar .dropdown-menu {
+  min-width: 200px;
+  padding: 0.5rem 0;
+}
+
+.navbar .dropdown-item {
+  padding: 0.5rem 1rem;
+}
+
+.navbar .dropdown-item i {
+  width: 20px;
+  text-align: center;
+}
+
+.navbar .dropdown-divider {
+  margin: 0.25rem 0;
+}
+
+.navbar .dropdown-item.logout {
+  color: #dc3545;
+}
+
+.navbar .dropdown-item.logout:hover {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+.dropdown-item.logout {
+  color: #dc3545;
+}
+
+.dropdown-item.logout:hover {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+/* Footer with Bootstrap Icons */
+footer {
+  background: linear-gradient(to right, var(--primary-dark), var(--primary-dark-2));
+  box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.2);
+  color: var(--text-light);
+}
+
+footer h5 {
+  color: var(--primary-gold);
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+}
+
+footer p, footer a {
+  color: rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s ease;
+}
+
+footer a:hover {
+  color: var(--primary-gold) !important;
+  text-decoration: none;
+  transform: translateX(3px);
+  display: inline-block;
+}
+
+footer hr {
+  background-color: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
+footer .social-icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  margin-right: 10px;
+  transition: all 0.3s ease;
+}
+
+footer .social-icons a i {
+  font-size: 1.25rem;
+}
+
+footer .social-icons a:hover {
+  background: var(--primary-gold);
+  color: var(--primary-dark-2) !important;
+  transform: translateY(-3px);
+}
+
+footer .bi {
+  color: var(--primary-gold);
+  margin-right: 5px;
+}
+
+footer .copyright {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+footer .input-group .form-control {
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  border-radius: 50px 0 0 50px;
+}
+
+footer .input-group .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+footer .input-group .form-control:focus {
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+footer .input-group .btn-gold {
+  border-radius: 0 50px 50px 0;
+}
+
+/* Services Section */
+.services-section .fas {
+  transition: all 0.3s ease;
+  color: #0d6efd;
+}
+
+.services-section .card:hover .fas {
+  transform: scale(1.2);
+}
+
+/* Section Titles */
+.section-title {
+  position: relative;
+  margin-bottom: 3rem;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: #0d6efd;
+  transition: width 0.3s ease;
+}
+
+.section-title:hover::after {
+  width: 120px;
+}
+
+/* Form Controls - Enhanced */
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Buttons - Enhanced */
+.btn {
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Newsletter Section */
+.newsletter-section {
+  background: linear-gradient(45deg, #0d6efd, #0099ff);
+}
+
+.newsletter-section input {
+  border-radius: 50px 0 0 50px;
+  border: none;
+}
+
+.newsletter-section button {
+  border-radius: 0 50px 50px 0;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .btn {
+    padding: 0.5rem 1rem;
+  }
+  
+  .search-section {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .newsletter-section input,
+  .newsletter-section button {
+    border-radius: 8px;
+    margin: 0.5rem 0;
+  }
+}
+
+/* Hero Section Enhancements */
+.hero-section {
+  height: 100vh !important;
+  min-height: 700px;
+}
+
+/* Global color variables for consistency */
+:root {
+  --primary-dark: #1a1a1a;
+  --primary-dark-2: #2c3e50;
+  --primary-gold: #ffd700;
+  --primary-gold-light: #ffed4a;
+  --text-light: #ffffff;
+  --text-dark: #2c3e50;
+}
+
+/* Hero Section - Already styled correctly */
+.hero-section .display-3 {
+  font-size: 3.5rem;
+  color: var(--primary-gold);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+}
+
+/* Search Section - Update to match theme */
+.search-section {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.search-section h2 {
+  color: var(--primary-dark-2);
+  font-size: 2rem;
+}
+
+.search-section .btn-primary {
+  background: linear-gradient(45deg, var(--primary-dark-2), var(--primary-dark));
+  border: none;
+}
+
+.search-section .btn-primary:hover {
+  background: linear-gradient(45deg, var(--primary-dark), var(--primary-dark-2));
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Featured Rooms - Update to match theme */
+.featured-rooms h2 {
+  color: var(--primary-dark-2);
+}
+
+.featured-rooms .decoration-line {
+  background: linear-gradient(90deg, var(--primary-gold), var(--primary-dark-2)) !important;
+}
+
+.featured-rooms .card-title {
+  color: var(--primary-dark-2);
+  font-weight: 600;
+}
+
+.featured-rooms .text-primary {
+  color: var(--primary-dark-2) !important;
+}
+
+.featured-rooms .btn-outline-primary {
+  color: var(--primary-dark-2);
+  border-color: var(--primary-gold);
+}
+
+.featured-rooms .btn-outline-primary:hover {
+  background-color: var(--primary-gold);
+  border-color: var(--primary-gold);
+  color: var(--primary-dark-2);
+}
+
+/* Services Section - Update to match theme */
+.services-section {
+  background: linear-gradient(to right, rgba(42, 62, 80, 0.05), rgba(26, 26, 26, 0.05));
+}
+
+.services-section h2 {
+  color: var(--primary-dark-2);
+}
+
+.services-section .decoration-line {
+  background: linear-gradient(90deg, var(--primary-gold), var(--primary-dark-2)) !important;
+}
+
+.services-section .bi {
+  color: var(--primary-gold);
+  background: linear-gradient(45deg, var(--primary-dark-2), var(--primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.services-section .card {
+  border: 1px solid rgba(255, 215, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.services-section .card-title {
+  color: var(--primary-dark-2);
+}
+
+/* Testimonials Section - Update to match theme */
+.testimonials-section {
+  background: linear-gradient(45deg, var(--primary-dark-2), var(--primary-dark));
+  color: var(--text-light);
+}
+
+.testimonials-section h2 {
+  color: var(--primary-gold);
+}
+
+.testimonials-section .card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.testimonials-section .text-warning i {
+  color: var(--primary-gold) !important;
+}
+
+/* About Us Section - Update to match theme */
+.about-section h2 {
+  color: var(--primary-dark-2);
+}
+
+.about-section .btn-outline-primary {
+  color: var(--primary-dark-2);
+  border-color: var(--primary-gold);
+}
+
+.about-section .btn-outline-primary:hover {
+  background-color: var(--primary-gold);
+  border-color: var(--primary-gold);
+  color: var(--primary-dark-2);
+}
+
+/* Special Offers - Update to match theme */
+.offers-section h2 {
+  color: var(--primary-dark-2);
+}
+
+.offers-section .text-primary {
+  color: var(--primary-dark-2) !important;
+}
+
+.offers-section .btn-outline-primary {
+  color: var(--primary-dark-2);
+  border-color: var(--primary-gold);
+}
+
+.offers-section .btn-outline-primary:hover {
+  background-color: var(--primary-gold);
+  border-color: var(--primary-gold);
+  color: var(--primary-dark-2);
+}
+
+/* Newsletter Section - Update to match theme */
+.newsletter-section {
+  background: linear-gradient(45deg, var(--primary-dark-2), var(--primary-dark));
+}
+
+.newsletter-section .btn-light {
+  background: var(--primary-gold);
+  color: var(--primary-dark-2);
+  border: none;
+}
+
+.newsletter-section .btn-light:hover {
+  background: var(--primary-gold-light);
+}
+
+/* Update all primary buttons to match theme */
+.btn-primary {
+  background: linear-gradient(45deg, var(--primary-dark-2), var(--primary-dark));
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, var(--primary-dark), var(--primary-dark-2));
+}
+
+/* Update all outline-primary buttons to match theme */
+.btn-outline-primary {
+  color: var(--primary-dark-2);
+  border-color: var(--primary-gold);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-gold);
+  border-color: var(--primary-gold);
+  color: var(--primary-dark-2);
+}
+
+/* Gold button for footer */
+.btn-gold {
+  background-color: var(--primary-gold);
+  color: var(--primary-dark-2);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+  background-color: var(--primary-gold-light);
+  color: var(--primary-dark-2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}

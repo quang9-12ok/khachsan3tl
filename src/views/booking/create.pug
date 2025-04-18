@@ -1,0 +1,219 @@
+extends ../layouts/main
+
+block content
+  .container
+    if !room
+      .alert.alert-danger Không tìm thấy thông tin phòng
+    else
+      // Breadcrumb
+      nav(aria-label="breadcrumb")
+        ol.breadcrumb
+          li.breadcrumb-item
+            a(href="/") Trang chủ
+          li.breadcrumb-item
+            a(href="/rooms") Phòng
+          li.breadcrumb-item
+            a(href=`/rooms/${room.id}`) #{room.type} - Phòng #{room.roomNumber}
+          li.breadcrumb-item.active(aria-current="page") Đặt phòng
+      
+      h1.mb-4 Đặt phòng
+      
+      .row
+        .col-md-8
+          .card.mb-4
+            .card-header.bg-white
+              h5.mb-0 Thông tin đặt phòng
+            .card-body
+              form#bookingForm(action="/bookings", method="POST")
+                input(type="hidden", name="roomId", value=room.id)
+                
+                .row.mb-3
+                  .col-md-6
+                    label.form-label(for="checkIn") Ngày nhận phòng
+                    input.form-control#checkIn(type="date", name="checkIn", required, value=query && query.checkIn ? query.checkIn : '')
+                  
+                  .col-md-6
+                    label.form-label(for="checkOut") Ngày trả phòng
+                    input.form-control#checkOut(type="date", name="checkOut", required, value=query && query.checkOut ? query.checkOut : '')
+                
+                .mb-3
+                  label.form-label(for="guests") Số khách
+                  select.form-select#guests(name="guests")
+                    - for (var i = 1; i <= room.capacity; i++)
+                      option(value=i, selected=query && query.guests == i) #{i} người
+                
+                textarea.form-control#notes(name="notes", rows="3", placeholder="Vui lòng cho chúng tôi biết nếu bạn có yêu cầu đặc biệt")
+                
+                h5.mt-4.mb-3 Thông tin liên hệ
+                
+                .mb-3
+                  label.form-label(for="name") Họ và tên
+                  input.form-control#name(type="text", name="name", required, value=user ? user.name : '')
+                
+                .row.mb-3
+                  .col-md-6
+                    label.form-label(for="email") Email
+                    input.form-control#email(type="email", name="email", required, value=user ? user.email : '')
+                  
+                  .col-md-6
+                    label.form-label(for="phone") Số điện thoại
+                    input.form-control#phone(type="tel", name="phone", required, value=user ? user.phone : '')
+                
+                h5.mt-4.mb-3 Phương thức thanh toán
+                
+                .mb-3
+                  .form-check.mb-2
+                    input.form-check-input#paymentMethod1(type="radio", name="paymentMethod", value="cash", checked)
+                    label.form-check-label(for="paymentMethod1") Thanh toán tại khách sạn
+                  
+                 
+                .form-check.mb-4
+                  input.form-check-input#terms(type="checkbox", name="terms", required)
+                  label.form-check-label(for="terms") 
+                    | Tôi đồng ý với điều khoản và điều kiện đặt phòng
+                
+                .alert.alert-info.mb-4
+                  p.mb-0
+                    i.fas.fa-info-circle.me-2
+                    | Sau khi đặt phòng, yêu cầu của bạn sẽ được gửi đến quản trị viên để xác nhận. 
+                    | Bạn sẽ nhận được email thông báo khi đặt phòng được xác nhận.
+                
+                .d-grid.gap-2
+                  button.btn.btn-primary.btn-lg(type="submit") Xác nhận đặt phòng
+        
+        // Fix the nested card structure and input elements with content issue
+        
+        .col-md-4
+          .card.mb-4.sticky-top(style="top: 20px;")
+            .card-header.bg-white
+              h5.mb-0 Tóm tắt đặt phòng
+            .card-body
+              .d-flex.align-items-center.mb-3
+                img.me-3(src=room.images && room.images.length > 0 ? room.images[0] : "/images/room-placeholder.jpg", alt=room.type, width="60", height="60")
+                div
+                  h6.mb-0 #{room.type} - Phòng #{room.roomNumber}
+                  small.text-muted Sức chứa: #{room.capacity} người
+              
+              hr.my-3
+              
+              .mb-3
+                p.mb-1.d-flex.justify-content-between
+                  span Ngày nhận phòng:
+                  strong#summaryCheckIn -
+                p.mb-1.d-flex.justify-content-between
+                  span Ngày trả phòng:
+                  strong#summaryCheckOut -
+                p.mb-1.d-flex.justify-content-between
+                  span Số đêm:
+                  strong#summaryNights -
+                p.mb-1.d-flex.justify-content-between
+                  span Số khách:
+                  strong#summaryGuests -
+              
+              hr.my-3
+              
+              p.mb-1.d-flex.justify-content-between
+                span Giá phòng:
+                strong#summaryRoomPrice #{room.price.toLocaleString('vi-VN')} VND / đêm
+              p.mb-1.d-flex.justify-content-between
+                span Tổng số đêm:
+                strong#summaryTotalNights -
+              
+              hr.my-3
+              
+              p.mb-0.d-flex.justify-content-between.align-items-center
+                span.fw-bold Tổng cộng:
+                strong.fs-5.text-primary#summaryTotal -
+        
+        // Add hidden fields to store calculated values (outside the card)
+        input#roomPrice(type="hidden" value=room.price)
+        input#roomType(type="hidden" value=room.type)
+        input#nightsInput(type="hidden" name="nights")
+        input#totalPriceInput(type="hidden" name="totalPrice")
+        
+        // Remove the duplicate content below this line
+        // The following duplicate content has been removed:
+        // div
+        //   h6.mb-0 #{room.type} - Phòng #{room.roomNumber}
+        //     small.text-muted Sức chứa: #{room.capacity} người
+        // 
+        // hr.my-3
+        // 
+        // .mb-3
+        //   p.mb-1.d-flex.justify-content-between
+        //     span Giá phòng:
+        //     strong #{formatCurrency ? formatCurrency(room.price) : room.price.toLocaleString('vi-VN') + ' VND'} / đêm
+        //   p.mb-1.d-flex.justify-content-between
+        //     span Tổng số đêm:
+        //     strong#totalNights -
+        //   if room.discount > 0
+        //     p.mb-1.d-flex.justify-content-between.text-success
+        //       span Giảm giá:
+        //       strong -#{formatCurrency ? formatCurrency(room.discount) : room.discount.toLocaleString('vi-VN') + ' VND'}
+        // 
+        // hr.my-3
+        // 
+        // p.mb-0.d-flex.justify-content-between.align-items-center
+        //   span.fs-5 Tổng cộng:
+        //   strong.fs-4.text-primary#totalPrice -
+
+block scripts
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      const checkInInput = document.getElementById('checkIn');
+      const checkOutInput = document.getElementById('checkOut');
+      const guestsInput = document.getElementById('guests');
+      const roomPrice = parseFloat(document.getElementById('roomPrice').value);
+      
+      function updateBookingSummary() {
+        // Get form values
+        const checkIn = checkInInput.value;
+        const checkOut = checkOutInput.value;
+        const guests = guestsInput.value;
+        
+        // Format dates for display
+        const checkInDate = checkIn ? new Date(checkIn) : null;
+        const checkOutDate = checkOut ? new Date(checkOut) : null;
+        
+        // Calculate number of nights
+        let nights = 0;
+        if (checkInDate && checkOutDate) {
+          const timeDiff = checkOutDate.getTime() - checkInDate.getTime();
+          nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        }
+        
+        // Calculate total price
+        const totalPrice = nights * roomPrice;
+        
+        // Update summary elements
+        document.getElementById('summaryCheckIn').textContent = checkIn ? 
+          checkInDate.toLocaleDateString('vi-VN') : '-';
+        document.getElementById('summaryCheckOut').textContent = checkOut ? 
+          checkOutDate.toLocaleDateString('vi-VN') : '-';
+        document.getElementById('summaryNights').textContent = nights > 0 ? nights : '-';
+        document.getElementById('summaryGuests').textContent = guests ? guests + ' người' : '-';
+        document.getElementById('summaryTotalNights').textContent = nights > 0 ? nights : '-';
+        document.getElementById('summaryTotal').textContent = totalPrice > 0 ? 
+          totalPrice.toLocaleString('vi-VN') + ' VND' : '-';
+        
+        // Store values in hidden fields
+        document.getElementById('nightsInput').value = nights;
+        document.getElementById('totalPriceInput').value = totalPrice;
+      }
+      
+      // Add event listeners
+      if (checkInInput) {
+        checkInInput.addEventListener('change', updateBookingSummary);
+      }
+      
+      if (checkOutInput) {
+        checkOutInput.addEventListener('change', updateBookingSummary);
+      }
+      
+      if (guestsInput) {
+        guestsInput.addEventListener('change', updateBookingSummary);
+      }
+      
+      // Initial update
+      updateBookingSummary();
+    });

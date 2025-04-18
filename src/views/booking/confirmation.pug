@@ -1,0 +1,71 @@
+extends ../layouts/main
+
+block content
+  .container.py-5
+    .row.justify-content-center
+      .col-md-8
+        .card.shadow-sm.border-0
+          .card-body.p-5.text-center
+            .mb-4
+              i.fas.fa-check-circle.text-success.fa-5x
+            
+            h2.mb-4 Đặt phòng thành công!
+            
+            p.lead.mb-4 Cảm ơn bạn đã đặt phòng tại Khách sạn 3TL. Mã đặt phòng của bạn là:
+            
+            .alert.alert-success.mb-4
+              h3.mb-0 #{booking.bookingCode}
+            
+            .row.mb-4
+              .col-md-6.mb-3.mb-md-0
+                .card.bg-light
+                  .card-body
+                    h5.card-title Thông tin phòng
+                    ul.list-unstyled.mb-0
+                      li.mb-2
+                        i.fas.fa-bed.me-2.text-primary
+                        | Loại phòng: #{booking.Room.type}
+                      li.mb-2
+                        i.fas.fa-door-open.me-2.text-primary
+                        | Số phòng: #{booking.Room.roomNumber || booking.Room.room_number}
+                      li.mb-2
+                        i.fas.fa-user-friends.me-2.text-primary
+                        | Số khách: #{booking.guests}
+              
+              .col-md-6
+                .card.bg-light
+                  .card-body
+                    h5.card-title Thông tin đặt phòng
+                    ul.list-unstyled.mb-0
+                      li.mb-2
+                        i.fas.fa-calendar-check.me-2.text-primary
+                        | Nhận phòng: #{new Date(booking.checkIn).toLocaleDateString('vi-VN')}
+                      li.mb-2
+                        i.fas.fa-calendar-times.me-2.text-primary
+                        | Trả phòng: #{new Date(booking.checkOut).toLocaleDateString('vi-VN')}
+                      li.mb-2
+                        i.fas.fa-moon.me-2.text-primary
+                        | Số đêm: #{booking.nights}
+            
+            .alert.alert-info.mb-4
+              .row.align-items-center
+                .col-md-8.text-md-start.text-center
+                  p.mb-md-0.mb-2
+                    i.fas.fa-info-circle.me-2
+                    | Tổng tiền: 
+                    span.fw-bold #{booking.totalPrice.toLocaleString('vi-VN')} VND
+                .col-md-4.text-md-end.text-center
+                  span.badge.bg-warning.text-dark.p-2
+                    i.fas.fa-clock.me-1
+                    | Chờ xác nhận
+            
+            p.mb-4 Chúng tôi đã gửi thông tin chi tiết về đặt phòng vào email của bạn. Vui lòng kiểm tra hộp thư đến.
+            
+            .d-grid.gap-3.d-md-flex.justify-content-md-center
+              a.btn.btn-primary.btn-lg(href=`/bookings/${booking.id}`)
+                i.fas.fa-info-circle.me-2
+                | Xem chi tiết đặt phòng
+              
+              a.btn.btn-outline-secondary.btn-lg(href="/")
+                i.fas.fa-home.me-2
+                | Về trang chủ

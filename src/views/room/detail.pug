@@ -1,0 +1,282 @@
+extends ../layouts/main
+
+block content
+  .container
+    if !room
+      .alert.alert-danger Không tìm thấy thông tin phòng
+    else
+      // Breadcrumb
+      nav(aria-label="breadcrumb")
+        ol.breadcrumb
+          li.breadcrumb-item
+            a(href="/") Trang chủ
+          li.breadcrumb-item
+            a(href="/rooms") Phòng
+          li.breadcrumb-item.active(aria-current="page") #{room.type}
+      
+      .row.mb-5
+        .col-md-8
+          // Room images carousel
+          if room.images && room.images.length > 0
+            #roomCarousel.carousel.slide.mb-4(data-bs-ride="carousel")
+              .carousel-indicators
+                each image, index in room.images
+                  button(type="button", data-bs-target="#roomCarousel", data-bs-slide-to=index, class=index === 0 ? "active" : "", aria-current=index === 0 ? "true" : "false", aria-label=`Slide ${index+1}`)
+              
+              .carousel-inner.rounded
+                each image, index in room.images
+                  .carousel-item(class=index === 0 ? "active" : "")
+                    img.d-block.w-100(src=image, alt=`${room.type} - Image ${index+1}`, style="height: 400px; object-fit: cover;")
+              
+              button.carousel-control-prev(type="button", data-bs-target="#roomCarousel", data-bs-slide="prev")
+                span.carousel-control-prev-icon(aria-hidden="true")
+                span.visually-hidden Previous
+              
+              button.carousel-control-next(type="button", data-bs-target="#roomCarousel", data-bs-slide="next")
+                span.carousel-control-next-icon(aria-hidden="true")
+                span.visually-hidden Next
+          else if room.image
+            img.img-fluid.rounded.mb-4(src=room.image, alt=room.type)
+          else
+            img.img-fluid.rounded.mb-4(src="/images/room-placeholder.jpg", alt=room.type)
+          
+          // Room description
+          h1.mb-3 #{room.type}
+          
+          if room.rating
+            .text-warning.mb-3
+              - for (var i = 0; i < Math.floor(room.rating); i++)
+                i.fas.fa-star
+              if room.rating % 1 !== 0
+                i.fas.fa-star-half-alt
+              - for (var i = 0; i < 5 - Math.ceil(room.rating); i++)
+                i.far.fa-star
+              span.text-muted.ms-2 #{room.rating.toFixed(1)} (#{room.reviewCount || 0} đánh giá)
+          
+          p.lead.mb-4 #{room.description}
+          
+          // Room features
+          h4.mb-3 Tiện nghi phòng
+          .row.mb-4
+            .col-md-6
+              ul.list-group.list-group-flush
+                li.list-group-item
+                  i.fas.fa-user-friends.me-2.text-primary
+                  | Sức chứa: #{room.capacity} người
+                li.list-group-item
+                  i.fas.fa-bed.me-2.text-primary
+                  | Giường: #{room.bedType}
+                li.list-group-item
+                  i.fas.fa-vector-square.me-2.text-primary
+                  | Diện tích: #{room.area} m²
+                li.list-group-item
+                  i.fas.fa-smoking-ban.me-2.text-primary
+                  | #{room.smoking ? 'Cho phép hút thuốc' : 'Không hút thuốc'}
+            
+            .col-md-6
+              ul.list-group.list-group-flush
+                li.list-group-item
+                  i.fas.fa-wifi.me-2.text-primary
+                  | Wi-Fi miễn phí
+                li.list-group-item
+                  i.fas.fa-tv.me-2.text-primary
+                  | TV màn hình phẳng
+                li.list-group-item
+                  i.fas.fa-snowflake.me-2.text-primary
+                  | Điều hòa nhiệt độ
+                li.list-group-item
+                  i.fas.fa-bath.me-2.text-primary
+                  | Phòng tắm riêng
+          
+          // Amenities
+          if room.amenities && room.amenities.length > 0
+            h4.mb-3 Tiện ích khác
+            .row.mb-4
+              each amenity in room.amenities
+                .col-md-4.mb-2
+                  i.fas.fa-check-circle.text-success.me-2
+                  | #{amenity}
+          
+          // Policies
+          h4.mb-3 Chính sách
+          .row.mb-4
+            .col-md-6
+              h6 Nhận phòng & Trả phòng
+              ul.list-unstyled
+                li
+                  i.fas.fa-clock.me-2.text-primary
+                  | Nhận phòng: Từ 14:00
+                li
+                  i.fas.fa-clock.me-2.text-primary
+                  | Trả phòng: Trước 12:00
+            
+            .col-md-6
+              h6 Chính sách hủy
+              ul.list-unstyled
+                li
+                  i.fas.fa-info-circle.me-2.text-primary
+                  | Miễn phí hủy trước 3 ngày
+                li
+                  i.fas.fa-info-circle.me-2.text-primary
+                  | Phí 50% nếu hủy trong vòng 1-2 ngày
+          
+          // Reviews
+          h4.mb-4 Đánh giá từ khách hàng
+          
+          if reviews && reviews.length > 0
+            each review in reviews
+              .card.mb-3
+                .card-body
+                  .d-flex.mb-3
+                      .rounded-circle.bg-primary.text-white.d-flex.align-items-center.justify-content-center.me-3(style="width: 50px; height: 50px;")
+                          = review.User ? review.User.name.charAt(0).toUpperCase() : 'G'
+                      
+                      div
+                          h6.mb-0 #{review.User ? review.User.name : 'Khách hàng ẩn danh'}
+                          .text-warning
+                              - for (var i = 0; i < review.rating; i++)
+                                i.fas.fa-star
+                              - for (var i = 0; i < 5 - review.rating; i++)
+                                i.far.fa-star
+                          small.text-muted #{new Date(review.createdAt).toLocaleDateString('vi-VN')}
+                  
+                  p.mb-0 #{review.comment}
+            
+            // Pagination if needed
+            if reviewPages > 1
+              nav(aria-label="Review pagination")
+                ul.pagination.justify-content-center
+                  li.page-item(class=currentReviewPage === 1 ? 'disabled' : '')
+                    a.page-link(href=`/rooms/${room.id}?reviewPage=${currentReviewPage-1}`) Trước
+                  
+                  - for (var i = 1; i <= reviewPages; i++)
+                    li.page-item(class=currentReviewPage === i ? 'active' : '')
+                      a.page-link(href=`/rooms/${room.id}?reviewPage=${i}`) #{i}
+                  
+                  li.page-item(class=currentReviewPage === reviewPages ? 'disabled' : '')
+                    a.page-link(href=`/rooms/${room.id}?reviewPage=${currentReviewPage+1}`) Sau
+          else
+            .alert.alert-info.mb-4
+              p.mb-0 Chưa có đánh giá nào cho phòng này.
+        
+        .col-md-4
+          // Booking card
+          .card.mb-4.sticky-top(style="top: 20px;")
+            .card-header.bg-white
+              h5.mb-0 Đặt phòng
+            .card-body
+              // Price display
+              .price-display.text-center.mb-4
+                if room.discount > 0
+                  p.mb-0
+                    span.text-decoration-line-through.text-muted #{formatCurrency ? formatCurrency(room.originalPrice) : room.originalPrice.toLocaleString('vi-VN') + ' VND'}
+                  span.badge.bg-danger.ms-2 -#{Math.round((room.discount / room.originalPrice) * 100)}%
+              
+              h3.text-primary.mb-0 #{formatCurrency ? formatCurrency(room.price) : room.price.toLocaleString('vi-VN') + ' VND'}
+              small.text-muted / đêm
+            
+              // Booking form
+              // Update the form action in your room detail page
+              form#bookingSearchForm(action="/bookings/create", method="GET")
+                input(type="hidden", name="roomId", value=room.id)
+                
+                .mb-3
+                  label.form-label(for="detailCheckIn") Ngày nhận phòng
+                  input.form-control#detailCheckIn(type="date", name="checkIn", required)
+                
+                .mb-3
+                  label.form-label(for="detailCheckOut") Ngày trả phòng
+                  input.form-control#detailCheckOut(type="date", name="checkOut", required)
+                
+                .mb-3
+                  label.form-label(for="detailGuests") Số khách
+                  select.form-select#detailGuests(name="guests")
+                    - for (var i = 1; i <= room.capacity; i++)
+                      option(value=i) #{i} người
+                
+                .d-grid.gap-2
+                  if user
+                    button.btn.btn-primary.btn-lg(type="submit") Đặt ngay
+                  else
+                    a.btn.btn-primary.btn-lg(href="/auth/login?redirect=" + encodeURIComponent(`/rooms/${room.id}`)) Đăng nhập để đặt phòng
+                    small.d-block.text-center.mt-2
+                      | Chưa có tài khoản? 
+                      a(href="/auth/register") Đăng ký ngay
+              
+              if room.availability && room.availability < 5
+                .alert.alert-warning.mt-3.mb-0
+                  p.mb-0.text-center
+                    i.fas.fa-exclamation-circle.me-2
+                    | Chỉ còn #{room.availability} phòng trống!
+          
+          // Similar rooms
+          if similarRooms && similarRooms.length > 0
+            .card.mb-4
+              .card-header.bg-white
+                h5.mb-0 Phòng tương tự
+              .card-body.p-0
+                .list-group.list-group-flush
+                  each similarRoom in similarRooms
+                    a.list-group-item.list-group-item-action.d-flex.align-items-center(href=`/room/${similarRoom.id}`)
+                      if similarRoom.images && similarRoom.images.length > 0
+                        img.rounded.me-3(src=similarRoom.images[0], alt=similarRoom.type, width="60", height="60", style="object-fit: cover;")
+                      else
+                        img.rounded.me-3(src="/images/room-placeholder.jpg", alt=similarRoom.type, width="60", height="60")
+                      
+                      div
+                        h6.mb-0 #{similarRoom.type}
+                        small.text-primary.fw-bold #{formatCurrency ? formatCurrency(similarRoom.price) : similarRoom.price.toLocaleString('vi-VN') + ' VND'} / đêm
+block styles
+  style.
+    .rating-stars {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+    }
+    
+    .rating-stars input {
+      display: none;
+    }
+    
+    .rating-stars label {
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #ddd;
+      margin-right: 5px;
+    }
+    
+    .rating-stars label:hover,
+    .rating-stars label:hover ~ label,
+    .rating-stars input:checked ~ label {
+      color: #ffc107;
+    }
+
+block scripts
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set default dates for booking form
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      
+      const checkIn = document.getElementById('detailCheckIn');
+      const checkOut = document.getElementById('detailCheckOut');
+      
+      checkIn.min = today.toISOString().split('T')[0];
+      checkIn.value = today.toISOString().split('T')[0];
+      
+      checkOut.min = tomorrow.toISOString().split('T')[0];
+      checkOut.value = tomorrow.toISOString().split('T')[0];
+      
+      // Ensure checkout date is always after checkin date
+      checkIn.addEventListener('change', function() {
+        const newCheckInDate = new Date(this.value);
+        const newCheckOutDate = new Date(newCheckInDate);
+        newCheckOutDate.setDate(newCheckOutDate.getDate() + 1);
+        
+        checkOut.min = newCheckOutDate.toISOString().split('T')[0];
+        if (new Date(checkOut.value) <= new Date(this.value)) {
+          checkOut.value = newCheckOutDate.toISOString().split('T')[0];
+        }
+      });
+    });

@@ -1,0 +1,88 @@
+extends ../layouts/admin
+
+block content
+  .container-fluid.py-4
+    .row
+      .col-12
+        .card.mb-4
+          .card-header.pb-0.d-flex.justify-content-between.align-items-center
+            h6 Quản lý đặt phòng
+            .d-flex
+              form.d-flex.me-2(action="/admin/bookings", method="GET")
+                input.form-control.me-2(type="text", name="search", placeholder="Tìm kiếm...", value=search)
+                button.btn.btn-sm.btn-primary(type="submit")
+                  i.fas.fa-search
+          
+          .card-body.px-0.pt-0.pb-2
+            if error && error.length > 0
+              .alert.alert-danger.mx-4
+                = error
+            if success && success.length > 0
+              .alert.alert-success.mx-4
+                = success
+            
+            .px-4.pb-3
+              .btn-group
+                a.btn.btn-sm(class=currentStatus === 'all' ? 'btn-primary' : 'btn-outline-primary', href="/admin/bookings") Tất cả
+                a.btn.btn-sm(class=currentStatus === 'pending' ? 'btn-warning' : 'btn-outline-warning', href="/admin/bookings?status=pending") Đang chờ
+                a.btn.btn-sm(class=currentStatus === 'confirmed' ? 'btn-success' : 'btn-outline-success', href="/admin/bookings?status=confirmed") Đã xác nhận
+                a.btn.btn-sm(class=currentStatus === 'cancelled' ? 'btn-danger' : 'btn-outline-danger', href="/admin/bookings?status=cancelled") Đã hủy
+                a.btn.btn-sm(class=currentStatus === 'completed' ? 'btn-info' : 'btn-outline-info', href="/admin/bookings?status=completed") Đã hoàn thành
+                
+            .table-responsive.p-0
+              table.table.align-items-center.mb-0
+                thead
+                  tr
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 ID
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Khách hàng
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Phòng
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Ngày nhận
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Ngày trả
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Tổng tiền
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Trạng thái
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Thao tác
+                
+                tbody
+                  if bookings && bookings.length > 0
+                    each booking in bookings
+                      tr
+                        td
+                          .d-flex.px-3.py-1
+                            .d-flex.flex-column.justify-content-center
+                              h6.mb-0.text-sm= booking.id
+                        td
+                          .d-flex.px-3.py-1
+                            .d-flex.flex-column.justify-content-center
+                              h6.mb-0.text-sm= booking.User ? booking.User.name : 'N/A'
+                              p.text-xs.text-secondary.mb-0= booking.User ? booking.User.email : 'N/A'
+                        td
+                          p.text-xs.font-weight-bold.mb-0= booking.Room ? booking.Room.room_number : 'N/A'
+                          p.text-xs.text-secondary.mb-0= booking.Room ? booking.Room.type : 'N/A'
+                        td
+                          p.text-xs.font-weight-bold.mb-0= formatDate(booking.checkIn)
+                        td
+                          p.text-xs.font-weight-bold.mb-0= formatDate(booking.checkOut)
+                        td
+                          p.text-xs.font-weight-bold.mb-0= formatCurrency(booking.totalPrice)
+                        td
+                          span(class=`badge bg-${booking.status === 'confirmed' ? 'success' : (booking.status === 'pending' ? 'warning' : (booking.status === 'completed' ? 'info' : 'danger'))}`)= booking.status
+                        td
+                          td
+                            .btn-group
+                              a.btn.btn-sm.btn-info(href=`/admin/bookings/${booking.id}` title="Xem chi tiết")
+                                i.fas.fa-eye
+                            if booking.status === 'pending'
+                              a.btn.btn-sm.btn-success(href=`/admin/bookings/${booking.id}/confirm` title="Xác nhận")
+                                i.fas.fa-check
+                            if booking.status === 'confirmed' && booking.paymentStatus !== 'paid'
+                              a.btn.btn-sm.btn-primary(href=`/admin/bookings/${booking.id}/payment` title="Thanh toán")
+                                i.fas.fa-credit-card
+                            if booking.status === 'confirmed' && booking.paymentStatus === 'paid'
+                              a.btn.btn-sm.btn-success(href=`/admin/bookings/${booking.id}/checkout` title="Check-out")
+                                i.fas.fa-sign-out-alt
+                            if booking.status !== 'cancelled' && booking.status !== 'completed'
+                              a.btn.btn-sm.btn-danger(href=`/admin/bookings/${booking.id}/cancel` title="Hủy đặt phòng" onclick="return confirm('Bạn có chắc chắn muốn hủy đặt phòng này?')")
+                                i.fas.fa-times
+                  else
+                    tr
+                      td.text-center(colspan="8") Không có đơn đặt phòng nào

@@ -1,0 +1,158 @@
+extends ../layouts/main
+
+block content
+  // Hero Section
+  .hero-section.position-relative.mb-5(style="height: 500px; overflow: hidden")
+    img.w-100.h-100.object-fit-cover.position-absolute.top-0.start-0(src="/images/banner.png", alt="Khách sạn 3TL", style="z-index: 0; transform: scale(1.1); transition: transform 10s ease")
+    .hero-overlay.position-absolute.top-0.start-0.w-100.h-100.bg-dark(style="opacity: 0.4; z-index: 1")
+    .container.position-relative(style="z-index: 2")
+      .row.align-items-center.h-100.py-5
+        .col-lg-8.col-md-10.mx-auto.text-white.text-center
+          h1.display-4.fw-bold.mb-4(style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5)") Giới thiệu về Khách sạn 3TL
+          p.lead.mb-4(style="text-shadow: 1px 1px 3px rgba(233, 201, 22, 0.5)") Khách sạn 3TL là điểm đến lý tưởng cho những ai tìm kiếm sự kết hợp hoàn hảo giữa sang trọng, tiện nghi và dịch vụ chất lượng cao.
+  
+  // Our story section
+  .our-story-section.position-relative.py-5.mb-5
+    .container.position-relative(style="z-index: 2")
+      .row.mb-5
+        .col-lg-8.mx-auto.text-center
+          h2.mb-4.text-primary.fw-bold Câu chuyện của chúng tôi
+          p.lead.mb-4 Khách sạn 3TL được thành lập vào năm 2010 với tầm nhìn trở thành điểm đến hàng đầu cho du khách trong và ngoài nước.
+          p Trải qua hơn một thập kỷ phát triển, chúng tôi không ngừng nâng cao chất lượng dịch vụ và mở rộng quy mô để đáp ứng nhu cầu ngày càng cao của khách hàng. Từ một khách sạn nhỏ với 20 phòng, đến nay Khách sạn 3TL đã có hơn 100 phòng với đầy đủ các loại phòng từ tiêu chuẩn đến hạng sang.
+    
+      .row.mb-5
+        .col-md-4.mb-4
+          .card.border-0.shadow-sm.h-100.bg-primary.bg-opacity-10
+            .card-body.text-center
+              i.fas.fa-history.fa-3x.text-primary.mb-3
+              h4.card-title Lịch sử
+              p.card-text Thành lập năm 2010, Khách sạn 3TL đã trải qua hơn 10 năm phát triển và không ngừng nâng cao chất lượng dịch vụ.
+        
+        .col-md-4.mb-4
+          .card.border-0.shadow-sm.h-100.bg-primary.bg-opacity-10
+            .card-body.text-center
+              i.fas.fa-map-marker-alt.fa-3x.text-primary.mb-3
+              h4.card-title Vị trí
+              p.card-text Tọa lạc tại trung tâm thành phố, gần các điểm tham quan du lịch nổi tiếng và chỉ cách sân bay 15 phút di chuyển.
+        
+        .col-md-4.mb-4
+          .card.border-0.shadow-sm.h-100.bg-primary.bg-opacity-10
+            .card-body.text-center
+              i.fas.fa-award.fa-3x.text-primary.mb-3
+              h4.card-title Giải thưởng
+              p.card-text Khách sạn 3TL tự hào đạt được nhiều giải thưởng uy tín về chất lượng dịch vụ và sự hài lòng của khách hàng.
+  
+  // Core values section
+  .container-fluid.bg-light.py-5.bg-light.py-5.core-values-section
+    .container
+      .row.mb-5
+        .col-lg-8.mx-auto.text-center
+          h2.mb-4.fw-bold Giá trị cốt lõi
+          p.lead Những giá trị định hướng mọi hoạt động của chúng tôi
+      
+      .row
+        .col-md-3.mb-4
+          .text-center
+            .bg-primary.text-white.rounded-circle.d-inline-flex.justify-content-center.align-items-center.mb-3(style="width: 80px; height: 80px;")
+              i.bi.bi-heart-fill.fs-2
+            h4.mb-3 Tận tâm
+            p Chúng tôi luôn đặt sự hài lòng của khách hàng lên hàng đầu và phục vụ với tất cả sự tận tâm.
+        
+        .col-md-3.mb-4
+          .text-center
+            .bg-primary.text-white.rounded-circle.d-inline-flex.justify-content-center.align-items-center.mb-3(style="width: 80px; height: 80px;")
+              i.bi.bi-star-fill.fs-2
+            h4.mb-3 Chất lượng
+            p Cam kết mang đến dịch vụ chất lượng cao nhất trong mọi khía cạnh của trải nghiệm lưu trú.
+        
+        .col-md-3.mb-4
+          .text-center
+            .bg-primary.text-white.rounded-circle.d-inline-flex.justify-content-center.align-items-center.mb-3(style="width: 80px; height: 80px;")
+              i.bi.bi-people-fill.fs-2
+            h4.mb-3 Trách nhiệm
+            p Chúng tôi luôn có trách nhiệm với khách hàng, nhân viên và cộng đồng xung quanh.
+        
+        .col-md-3.mb-4
+          .text-center
+            .bg-primary.text-white.rounded-circle.d-inline-flex.justify-content-center.align-items-center.mb-3(style="width: 80px; height: 80px;")
+              i.bi.bi-tree-fill.fs-2
+            h4.mb-3 Bền vững
+            p Cam kết phát triển bền vững và bảo vệ môi trường trong mọi hoạt động kinh doanh.
+  
+  // Our team section
+  .container.py-5
+    .row.mb-5
+      .col-lg-8.mx-auto.text-center
+        h2.mb-4 Đội ngũ của chúng tôi
+        p.lead Những con người tạo nên sự khác biệt
+    
+    .row
+      .col-md-4.mb-4
+        .card.border-0.shadow-sm
+          img.card-img-top(src="/images/quang.png", alt="Giám đốc")
+          .card-body.text-center
+            h5.card-title Trần Duy QuangQuang
+            p.card-text.text-muted Giám đốc điều hành
+            p.card-text Với hơn 15 năm kinh nghiệm trong ngành khách sạn, ông QuangQuang đã dẫn dắt Khách sạn 3TL phát triển vững mạnh.
+      
+      .col-md-4.mb-4
+        .card.border-0.shadow-sm
+          img.card-img-top(src="/images/nho va huong.jpg", alt="Quản lý")
+          .card-body.text-center
+            h5.card-title Nguyễn Văn NhớNhớ
+            p.card-text.text-muted Quản lý khách sạn
+            p.card-text Chịu trách nhiệm đảm bảo mọi hoạt động của khách sạn diễn ra suôn sẻ và khách hàng luôn hài lòng.
+      
+      .col-md-4.mb-4
+        .card.border-0.shadow-sm
+          img.card-img-top(src="/images/phuc.jpg", alt="Bếp trưởng")
+          .card-body.text-center
+            h5.card-title Nguyễn Trương Phúc
+            p.card-text.text-muted Bếp trưởng
+            p.card-text Với kinh nghiệm làm việc tại nhiều nhà hàng 5 sao, ông Phúc mang đến những trải nghiệm ẩm thực tuyệt vời.
+  
+  // Facilities section
+  .container-fluid.bg-light.py-5
+    .container
+      .row.mb-5
+        .col-lg-8.mx-auto.text-center
+          h2.mb-4 Cơ sở vật chất
+          p.lead Những tiện nghi hiện đại phục vụ nhu cầu của quý khách
+      
+      .row
+        .col-md-6.col-lg-3.mb-4
+          .card.border-0.shadow-sm.h-100
+            img.card-img-top(src="/images/luxury6.jpg", alt="Phòng nghỉ")
+            .card-body
+              h5.card-title Phòng nghỉ
+              p.card-text Các phòng được thiết kế hiện đại, đầy đủ tiện nghi với không gian thoáng đãng.
+        
+        .col-md-6.col-lg-3.mb-4
+          .card.border-0.shadow-sm.h-100
+            img.card-img-top(src="/images/nhahang.jpg", alt="Nhà hàng")
+            .card-body
+              h5.card-title Nhà hàng
+              p.card-text Nhà hàng phục vụ các món ăn đặc sản địa phương và quốc tế với chất lượng hàng đầu.
+        
+        .col-md-6.col-lg-3.mb-4
+          .card.border-0.shadow-sm.h-100
+            img.card-img-top(src="/images/hoboi.webp", alt="Hồ bơi")
+            .card-body
+              h5.card-title Hồ bơi
+              p.card-text Hồ bơi ngoài trời với tầm nhìn tuyệt đẹp, nơi lý tưởng để thư giãn.
+        
+        .col-md-6.col-lg-3.mb-4
+          .card.border-0.shadow-sm.h-100
+            img.card-img-top(src="/images/spa.jpg", alt="Spa")
+            .card-body
+              h5.card-title Spa & Massage
+              p.card-text Dịch vụ spa và massage chuyên nghiệp giúp quý khách thư giãn và tái tạo năng lượng.
+  
+  // CTA section
+  .container.py-5
+    .row
+      .col-lg-10.mx-auto
+        .card.bg-primary.text-white.p-5.text-center
+          h2.mb-4 Trải nghiệm dịch vụ của chúng tôi ngay hôm nay
+          p.lead.mb-4 Đặt phòng ngay để nhận được những ưu đãi đặc biệt và trải nghiệm dịch vụ tuyệt vời tại Khách sạn 3TL.
+          a.btn.btn-light.btn-lg(href="/rooms") Đặt phòng ngay

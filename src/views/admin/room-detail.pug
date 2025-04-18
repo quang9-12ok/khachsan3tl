@@ -1,0 +1,67 @@
+extends ../layouts/admin
+
+block content
+  .container-fluid.py-4
+    .row
+      .col-12
+        .card.mb-4
+          .card-header.pb-0.d-flex.justify-content-between.align-items-center
+            h6 Chi tiết phòng
+            .d-flex
+              a.btn.btn-sm.btn-primary.me-2(href=`/admin/rooms/${room.id}/edit`)
+                i.fas.fa-edit.me-2
+                | Chỉnh sửa
+              a.btn.btn-sm.btn-secondary(href="/admin/rooms")
+                i.fas.fa-arrow-left.me-2
+                | Quay lại
+          
+          .card-body
+            if error && error.length > 0
+              .alert.alert-danger
+                = error
+            if success && success.length > 0
+              .alert.alert-success
+                = success
+                
+            .row
+              .col-md-6
+                .form-group
+                  label.form-control-label ID
+                  p.form-control-static= room.id
+                
+                .col-md-6
+                .form-group
+                  label.form-control-label Số phòng
+                  p.form-control-static= room.room_number
+            
+            .row.mt-3
+              .col-md-6
+                .form-group
+                  label.form-control-label Loại phòng
+                  p.form-control-static= room.type
+              
+              .col-md-6
+                .form-group
+                  label.form-control-label Giá phòng
+                  p.form-control-static= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(room.price)
+            
+            .row.mt-3
+              .col-md-6
+                .form-group
+                  label.form-control-label Trạng thái
+                  p.form-control-static
+                    span(class=`badge bg-${room.status === 'available' ? 'success' : (room.status === 'booked' ? 'warning' : 'danger')}`)= room.status
+              
+              .col-md-6
+                .form-group
+                  label.form-control-label Mô tả
+                  p.form-control-static= room.description || 'Không có mô tả'
+            
+            // Find the section that displays "Hình ảnh phòng" and update it to:
+            
+            div
+              h5 Hình ảnh phòng
+              if room.image
+                img.img-fluid.rounded(src=room.image alt=`Room ${room.room_number}` style="max-height: 300px;")
+              else
+                p Chưa có hình ảnh

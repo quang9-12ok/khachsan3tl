@@ -1,0 +1,185 @@
+/* About Page Specific Styles */
+
+/* Thêm biến màu chính phù hợp với banner */
+:root {
+  --primary-color: #007bff;
+  --primary-dark: #0056b3;
+  --accent-color: #e9c916;
+  --text-light: #ffffff;
+  --text-dark: #343a40;
+}
+
+/* Hero Section Animation - giữ nguyên */
+.hero-section img {
+  animation: slowZoom 20s infinite alternate;
+}
+
+@keyframes slowZoom {
+  from { transform: scale(1.1); }
+  to { transform: scale(1.2); }
+}
+
+/* Our Story Section - cập nhật màu sắc */
+.our-story-section {
+  background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
+              url('/images/banner.png') no-repeat center center;
+  background-size: cover;
+  background-attachment: fixed;
+  position: relative;
+  padding: 80px 0;
+}
+
+.our-story-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.1) 0%, rgba(0, 123, 255, 0.05) 100%);
+  z-index: 1;
+}
+
+.our-story-section h2 {
+  color: var(--primary-color);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.our-story-section .card {
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.our-story-section .card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 123, 255, 0.1) !important;
+}
+
+.our-story-section .card-body i {
+  transition: transform 0.3s ease;
+  color: var(--primary-color);
+}
+
+.our-story-section .card:hover i {
+  transform: scale(1.2);
+}
+
+/* Core Values Section - cập nhật màu sắc */
+.core-values-section {
+  background-color: #f8f9fa;
+}
+
+.core-values-section h2 {
+  color: var(--primary-color);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.core-values-section .rounded-circle {
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+}
+
+.core-values-section .text-center:hover .rounded-circle {
+  transform: scale(1.1);
+  box-shadow: 0 10px 20px rgba(0, 123, 255, 0.2);
+}
+
+/* Các phần còn lại giữ nguyên */
+.container.py-5 .card {
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.container.py-5 .card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.container.py-5 .card img {
+  transition: all 0.5s ease;
+  height: 300px;
+  object-fit: cover;
+}
+
+.container.py-5 .card:hover img {
+  transform: scale(1.05);
+}
+
+/* Facilities Section */
+.container-fluid.bg-light.py-5 .card {
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.container-fluid.bg-light.py-5 .card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.container-fluid.bg-light.py-5 .card img {
+  height: 200px;
+  object-fit: cover;
+  transition: all 0.5s ease;
+}
+
+.container-fluid.bg-light.py-5 .card:hover img {
+  transform: scale(1.05);
+}
+
+/* CTA Section */
+.container.py-5 .bg-primary.text-white {
+  border-radius: 15px;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+  transition: all 0.3s ease;
+}
+
+.container.py-5 .bg-primary.text-white:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 123, 255, 0.3) !important;
+}
+
+.container.py-5 .btn-light {
+  transition: all 0.3s ease;
+  border-radius: 30px;
+  padding: 10px 30px;
+  font-weight: 600;
+}
+
+.container.py-5 .btn-light:hover {
+  background-color: #f8f9fa;
+  color: #007bff;
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero-section {
+    height: 400px !important;
+  }
+  
+  .our-story-section {
+    padding: 50px 0;
+  }
+  
+  .container.py-5 .card img {
+    height: 250px;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-section {
+    height: 300px !important;
+  }
+  
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+  
+  .container.py-5 .card img {
+    height: 200px;
+  }
+}

@@ -1,0 +1,75 @@
+extends ../layouts/main
+
+block content
+  .container.my-5
+    .row.justify-content-center
+      .col-md-8
+        .card.shadow
+          .card-header.bg-primary.text-white
+            h4.mb-0 Đánh giá phòng
+          .card-body
+            if success && success.length > 0
+              .alert.alert-success
+                = success
+            if error && error.length > 0
+              .alert.alert-danger
+                = error
+            
+            .mb-4
+              h5 Thông tin đặt phòng
+              p
+                strong Mã đặt phòng: 
+                span= booking.bookingCode || 'N/A'
+              p
+                strong Phòng: 
+                span= booking.Room ? (booking.Room.type + ' - ' + booking.Room.room_number) : 'N/A'
+              p
+                strong Thời gian lưu trú: 
+                span #{new Date(booking.checkIn).toLocaleDateString('vi-VN')} - #{new Date(booking.checkOut).toLocaleDateString('vi-VN')}
+            
+            form(action=existingReview ? `/reviews/${existingReview.id}/update` : `/reviews/${booking.id}/create`, method="POST")
+              // Update the rating input section to ensure a default value is selected
+              .mb-3
+                label.form-label(for="rating") Đánh giá
+                .rating-stars.mb-2
+                  each val in [5, 4, 3, 2, 1]
+                    input.star-rating(
+                      type="radio", 
+                      id=`star${val}`, 
+                      name="rating", 
+                      value=val, 
+                      checked=(existingReview && existingReview.rating == val) || (!existingReview && val === 5),
+                      required
+                    )
+                    label(for=`star${val}`)
+                      i.fas.fa-star
+              
+              .mb-3
+                label.form-label(for="comment") Nhận xét
+                textarea.form-control(id="comment", name="comment", rows="5", required)= existingReview ? existingReview.comment : ''
+              
+              .d-flex.justify-content-between
+                a.btn.btn-secondary(href="/bookings/my") Quay lại
+                button.btn.btn-primary(type="submit")= existingReview ? 'Cập nhật đánh giá' : 'Gửi đánh giá'
+
+block styles
+  style.
+    .rating-stars {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+    }
+    .star-rating {
+      display: none;
+    }
+    .rating-stars label {
+      color: #ddd;
+      font-size: 24px;
+      padding: 0 5px;
+      cursor: pointer;
+    }
+    .rating-stars label:hover,
+    .rating-stars label:hover ~ label,
+    .rating-stars input:checked ~ label {
+      color: #ffc107;
+    }

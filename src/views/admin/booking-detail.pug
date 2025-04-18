@@ -1,0 +1,88 @@
+extends ../layouts/admin
+
+block content
+  .container-fluid.py-4
+    .row
+      .col-12
+        .card.mb-4
+          .card-header.pb-0.d-flex.justify-content-between.align-items-center
+            h6 Chi tiết đơn đặt phòng ##{booking.id}
+            .d-flex
+              a.btn.btn-sm.btn-secondary(href="/admin/bookings")
+                i.fas.fa-arrow-left.me-2
+                | Quay lại
+          
+          .card-body
+            if error && error.length > 0
+              .alert.alert-danger
+                = error
+            if success && success.length > 0
+              .alert.alert-success
+                = success
+            
+            .row.mb-4
+              .col-md-6
+                .card.bg-light
+                  .card-header.bg-primary.text-white
+                    h6.mb-0 Thông tin khách hàng
+                  .card-body
+                    p.mb-1
+                      strong ID: 
+                      span= booking.User ? booking.User.id : 'N/A'
+                    p.mb-1
+                      strong Tên: 
+                      span= booking.User ? booking.User.name : 'N/A'
+                    p.mb-1
+                      strong Email: 
+                      span= booking.User ? booking.User.email : 'N/A'
+                    p.mb-1
+                      strong Số điện thoại: 
+                      span= booking.User ? booking.User.phone : 'N/A'
+              
+              .col-md-6
+                .card.bg-light
+                  .card-header.bg-info.text-white
+                    h6.mb-0 Thông tin phòng
+                  .card-body
+                    p.mb-1
+                      strong ID: 
+                      span= booking.Room ? booking.Room.id : 'N/A'
+                    p.mb-1
+                      strong Số phòng: 
+                      span= booking.Room ? booking.Room.room_number : 'N/A'
+                    p.mb-1
+                      strong Loại phòng: 
+                      span= booking.Room ? booking.Room.type : 'N/A'
+                    p.mb-1
+                      strong Giá: 
+                      span= booking.Room ? formatCurrency(booking.Room.price) : 'N/A'
+            
+            .row.mb-4
+              .col-12
+                .card.bg-light
+                  .card-header.bg-success.text-white
+                    h6.mb-0 Chi tiết đặt phòng
+                  .card-body
+                    .row
+                      .col-md-6
+                        p.mb-1
+                          strong Ngày nhận phòng: 
+                          span= formatDate(booking.checkIn)
+                        p.mb-1
+                          strong Ngày trả phòng: 
+                          span= formatDate(booking.checkOut)
+                        p.mb-1
+                          strong Số người: 
+                          span= booking.guestCount || 'N/A'
+                      .col-md-6
+                        p.mb-1
+                          strong Tổng tiền: 
+                          span= formatCurrency(booking.totalPrice)
+                        p.mb-1
+                          strong Trạng thái: 
+                          span(class=`badge bg-${booking.status === 'confirmed' ? 'success' : (booking.status === 'pending' ? 'warning' : 'danger')}`)= booking.status
+                        p.mb-1
+                          strong Ghi chú: 
+                          span= booking.specialRequests || booking.notes || 'Không có'
+            
+            

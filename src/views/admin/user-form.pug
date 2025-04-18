@@ -1,0 +1,106 @@
+extends ../layouts/admin
+
+block content
+  .container-fluid.py-4
+    .row
+      .col-12
+        .card.mb-4
+          .card-header.pb-0
+            h6= isNew ? 'Thêm người dùng mới' : 'Chỉnh sửa người dùng'
+          
+          .card-body
+            if error && error.length > 0
+              .alert.alert-danger
+                = error
+            if success && success.length > 0
+              .alert.alert-success
+                = success
+            
+            form(action=isNew ? '/admin/users' : `/admin/users/${user.id}`, method=isNew ? 'POST' : 'PUT')
+              .row
+                .col-md-6
+                  .form-group
+                    label.form-control-label(for="name") Họ tên
+                    input.form-control(type="text", id="name", name="name", value=user.name || '', required)
+                
+                .col-md-6
+                  .form-group
+                    label.form-control-label(for="email") Email
+                    input.form-control(type="email", id="email", name="email", value=user.email || '', required)
+              
+              .row.mt-3
+                .col-md-6
+                  .form-group
+                    label.form-control-label(for="phone") Số điện thoại
+                    input.form-control(type="text", id="phone", name="phone", value=user.phone || '')
+                
+                .col-md-6
+                  .form-group
+                    label.form-control-label(for="role") Vai trò
+                    select.form-control(id="role", name="role")
+                      option(value="user", selected=user.role === 'user') Người dùng
+                      option(value="admin", selected=user.role === 'admin') Quản trị viên
+              
+              if isNew
+                .row.mt-3
+                  .col-md-6
+                    .form-group
+                      label.form-control-label(for="password") Mật khẩu
+                      input.form-control(type="password", id="password", name="password", required)
+                  
+                  .col-md-6
+                    .form-group
+                      label.form-control-label(for="confirmPassword") Xác nhận mật khẩu
+                      input.form-control(type="password", id="confirmPassword", name="confirmPassword", required)
+              
+              .row.mt-3
+                .col-md-12
+                  .form-group
+                    label.form-control-label(for="address") Địa chỉ
+                    textarea.form-control(id="address", name="address", rows="3")= user.address || ''
+              
+              .d-flex.justify-content-between.mt-4
+                a.btn.btn-secondary(href="/admin/users") Quay lại
+                button.btn.btn-primary(type="submit")= isNew ? 'Tạo người dùng' : 'Cập nhật'
+
+block scripts
+  script.
+    // Form submission handling for PUT method
+    if (!#{isNew}) {
+      document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Lấy tất cả dữ liệu từ form
+        const formData = new FormData(this);
+        const data = {};
+        formData.forEach((value, key) => {
+          data[key] = value;
+        });
+        
+        // Gửi request PUT
+        fetch(this.action, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Hiển thị thông báo thành công
+            alert(data.message || 'Cập nhật người dùng thành công');
+            
+            // Chuyển hướng đến trang danh sách người dùng
+            window.location.href = data.redirectUrl || '/admin/users';
+          } else {
+            alert(data.message || 'Đã xảy ra lỗi khi cập nhật người dùng');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Đã xảy ra lỗi khi cập nhật người dùng');
+        });
+      });
+    }

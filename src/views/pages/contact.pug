@@ -1,0 +1,154 @@
+extends ../layouts/main
+
+block content
+  // Hero section
+  .container-fluid.bg-light.py-5.mb-5
+    .container
+      .row
+        .col-lg-8.mx-auto.text-center
+          h1.display-4.fw-bold.mb-4 Liên hệ với chúng tôi
+          p.lead.mb-0 Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ quý khách 24/7
+
+  // Contact information
+  .container.py-5
+    .row.mb-5
+      .col-md-4.mb-4
+        .card.border-0.shadow-sm.h-100
+          .card-body.text-center
+            i.fas.fa-map-marker-alt.fa-3x.text-primary.mb-3
+            h4.card-title Địa chỉ
+            p.card-text 123 Đường Nguyễn Huệ, Quận 1
+            p.card-text Thành phố Hồ Chí Minh, Việt Nam
+      
+      .col-md-4.mb-4
+        .card.border-0.shadow-sm.h-100
+          .card-body.text-center
+            i.fas.fa-phone-alt.fa-3x.text-primary.mb-3
+            h4.card-title Điện thoại
+            p.card-text Đặt phòng: 
+              a(href="tel:+84901234567") 090 123 4567
+            p.card-text Hỗ trợ khách hàng: 
+              a(href="tel:+84901234568") 090 123 4568
+      
+      .col-md-4.mb-4
+        .card.border-0.shadow-sm.h-100
+          .card-body.text-center
+            i.fas.fa-envelope.fa-3x.text-primary.mb-3
+            h4.card-title Email
+            p.card-text
+              a(href="mailto:info@khachsan3tl.com") info@khachsan3tl.com
+            p.card-text
+              a(href="mailto:booking@khachsan3tl.com") booking@khachsan3tl.com
+  
+  // Map and contact form
+  .container.py-5
+    .row
+      .col-lg-6.mb-4
+        h3.mb-4 Vị trí của chúng tôi
+        .ratio.ratio-16x9.shadow
+          iframe(src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4241674197667!2d106.70232161471839!3d10.777868992319734!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f4670702e31%3A0xa5777fb3a5bb9972!2zMTIzIE5ndXnhu4VuIEh14buHLCBC4bq_biBOZ2jDqSwgUXXhuq1uIDEsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1651825787272!5m2!1svi!2s", width="600", height="450", style="border:0;", allowfullscreen="", loading="lazy", referrerpolicy="no-referrer-when-downgrade")
+      
+      .col-lg-6
+        h3.mb-4 Gửi tin nhắn cho chúng tôi
+        form#contactForm(action="/contact/send", method="POST")
+          .mb-3
+            label.form-label(for="name") Họ và tên
+            input.form-control#name(type="text", name="name", required)
+          
+          .mb-3
+            label.form-label(for="email") Email
+            input.form-control#email(type="email", name="email", required)
+          
+          .mb-3
+            label.form-label(for="phone") Số điện thoại
+            input.form-control#phone(type="tel", name="phone")
+          
+          .mb-3
+            label.form-label(for="subject") Tiêu đề
+            input.form-control#subject(type="text", name="subject", required)
+          
+          .mb-3
+            label.form-label(for="message") Nội dung
+            textarea.form-control#message(name="message", rows="5", required)
+          
+          button.btn.btn-primary.w-100(type="submit") Gửi tin nhắn
+  
+  // FAQ section
+  .container-fluid.bg-light.py-5
+    .container
+      .row.mb-5
+        .col-lg-8.mx-auto.text-center
+          h2.mb-4 Câu hỏi thường gặp
+          p.lead Những thông tin hữu ích dành cho quý khách
+      
+      .row
+        .col-lg-10.mx-auto
+          .accordion#faqAccordion
+            .accordion-item
+              h2.accordion-header#faqHeading1
+                button.accordion-button(type="button", data-bs-toggle="collapse", data-bs-target="#faqCollapse1", aria-expanded="true", aria-controls="faqCollapse1")
+                  | Thời gian nhận và trả phòng?
+              #faqCollapse1.accordion-collapse.collapse.show(aria-labelledby="faqHeading1", data-bs-parent="#faqAccordion")
+                .accordion-body
+                  p Thời gian nhận phòng (check-in) là 14:00 và thời gian trả phòng (check-out) là 12:00 trưa. Nếu quý khách cần nhận phòng sớm hoặc trả phòng muộn, vui lòng liên hệ trước với chúng tôi để được hỗ trợ.
+            
+            .accordion-item
+              h2.accordion-header#faqHeading2
+                button.accordion-button.collapsed(type="button", data-bs-toggle="collapse", data-bs-target="#faqCollapse2", aria-expanded="false", aria-controls="faqCollapse2")
+                  | Khách sạn có đón và tiễn sân bay không?
+              #faqCollapse2.accordion-collapse.collapse(aria-labelledby="faqHeading2", data-bs-parent="#faqAccordion")
+                .accordion-body
+                  p Có, chúng tôi có dịch vụ đón và tiễn sân bay với chi phí phụ thu. Quý khách vui lòng đặt trước ít nhất 24 giờ để chúng tôi sắp xếp phương tiện phù hợp.
+            
+            .accordion-item
+              h2.accordion-header#faqHeading3
+                button.accordion-button.collapsed(type="button", data-bs-toggle="collapse", data-bs-target="#faqCollapse3", aria-expanded="false", aria-controls="faqCollapse3")
+                  | Khách sạn có chấp nhận thú cưng không?
+              #faqCollapse3.accordion-collapse.collapse(aria-labelledby="faqHeading3", data-bs-parent="#faqAccordion")
+                .accordion-body
+                  p Rất tiếc, khách sạn chúng tôi không chấp nhận thú cưng, ngoại trừ chó dẫn đường cho người khiếm thị.
+            
+            .accordion-item
+              h2.accordion-header#faqHeading4
+                button.accordion-button.collapsed(type="button", data-bs-toggle="collapse", data-bs-target="#faqCollapse4", aria-expanded="false", aria-controls="faqCollapse4")
+                  | Có bữa sáng miễn phí không?
+              #faqCollapse4.accordion-collapse.collapse(aria-labelledby="faqHeading4", data-bs-parent="#faqAccordion")
+                .accordion-body
+                  p Có, tất cả các đặt phòng đều bao gồm bữa sáng buffet miễn phí phục vụ từ 6:00 đến 10:00 sáng tại nhà hàng của khách sạn.
+  
+  // Business hours
+  .container.py-5
+    .row
+      .col-lg-8.mx-auto
+        .card.border-0.shadow
+          .card-body
+            h3.card-title.text-center.mb-4 Giờ làm việc
+            
+            .table-responsive
+              table.table.table-striped
+                thead
+                  tr
+                    th Dịch vụ
+                    th Thứ Hai - Thứ Sáu
+                    th Thứ Bảy - Chủ Nhật
+                tbody
+                  tr
+                    td Lễ tân
+                    td 24/7
+                    td 24/7
+                  tr
+                    td Nhà hàng
+                    td 6:00 - 22:00
+                    td 6:00 - 23:00
+                  tr
+                    td Spa & Massage
+                    td 10:00 - 21:00
+                    td 9:00 - 22:00
+                  tr
+                    td Hồ bơi
+                    td 7:00 - 21:00
+                    td 7:00 - 21:00
+                  tr
+                    td Phòng gym
+                    td 6:00 - 22:00
+                    td 6:00 - 22:00

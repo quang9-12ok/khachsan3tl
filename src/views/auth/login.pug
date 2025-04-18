@@ -1,0 +1,40 @@
+extends ../layouts/main
+
+block content
+  .container.py-5
+    .row.justify-content-center
+      .col-md-6
+        .card.shadow
+          .card-header.bg-primary.text-white
+            h4.mb-0 Đăng nhập
+          .card-body
+            if error && error.length > 0
+              .alert.alert-danger= error
+            
+            if success && success.length > 0
+              .alert.alert-success= success
+            
+            form(action="/auth/login", method="POST")
+              if redirect
+                input(type="hidden", name="redirect", value=redirect)
+              
+              .mb-3
+                label.form-label(for="email") Email
+                input.form-control#email(type="email", name="email", required)
+              
+              .mb-3
+                label.form-label(for="password") Mật khẩu
+                input.form-control#password(type="password", name="password", required)
+              
+              .mb-3.form-check
+                input.form-check-input#remember(type="checkbox", name="remember")
+                label.form-check-label(for="remember") Ghi nhớ đăng nhập
+              
+              .d-grid.gap-2
+                button.btn.btn-primary(type="submit") Đăng nhập
+            
+            .mt-3.text-center
+              p.mb-0 Chưa có tài khoản? 
+                a(href="/auth/register") Đăng ký ngay
+              p.mt-2
+                a(href="/auth/forgot-password") Quên mật khẩu?

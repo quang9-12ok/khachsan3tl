@@ -1,0 +1,17 @@
+extends layouts/main
+
+block content
+  .container.py-5
+    .row.justify-content-center
+      .col-md-8
+        .card.shadow
+          .card-header.bg-danger.text-white
+            h4.mb-0 Error
+          .card-body
+            h5= message
+            if error && Object.keys(error).length > 0
+              pre.mt-3.bg-light.p-3.rounded
+                code= JSON.stringify(error, null, 2)
+            
+            .mt-4
+              a.btn.btn-primary(href="/") Return to Home

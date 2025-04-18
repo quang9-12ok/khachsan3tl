@@ -1,0 +1,90 @@
+extends ../layouts/main
+
+block content
+  // Add this near the top of the file, right after the container div
+  .container.my-5
+    if success && success.length > 0
+      .alert.alert-success.alert-dismissible.fade.show
+        = success
+        button.btn-close(type="button", data-bs-dismiss="alert", aria-label="Close")
+  
+    if error && error.length > 0
+      .alert.alert-danger.alert-dismissible.fade.show
+        = error
+        button.btn-close(type="button", data-bs-dismiss="alert", aria-label="Close")
+  
+    .row.justify-content-center
+      .col-12
+        .card.shadow.mb-4
+          .card-header.bg-primary.text-white
+            h4.mb-0 Lịch sử đặt phòng
+          .card-body
+            if success && success.length > 0
+              .alert.alert-success
+                = success
+            if error && error.length > 0
+              .alert.alert-danger
+                = error
+                
+            if bookings && bookings.length > 0
+              .row
+                // Add this to the booking history page to allow users to leave reviews
+                
+                each booking in bookings
+                  .card.mb-3
+                    .card-header.bg-light.d-flex.justify-content-between.align-items-center
+                      h5.mb-0 Mã đặt phòng: #{booking.bookingCode || 'N/A'}
+                      span(class=`badge bg-${booking.status === 'confirmed' ? 'success' : booking.status === 'pending' ? 'warning' : booking.status === 'cancelled' ? 'danger' : booking.status === 'completed' ? 'info' : 'secondary'}`)= booking.status === 'confirmed' ? 'Đã xác nhận' : booking.status === 'pending' ? 'Chờ xác nhận' : booking.status === 'cancelled' ? 'Đã hủy' : booking.status === 'completed' ? 'Đã hoàn thành' : booking.status
+                    
+                    .card-body
+                      .row
+                        .col-md-6
+                          p
+                            strong Phòng: 
+                            span= booking.Room ? (booking.Room.type + ' - ' + booking.Room.room_number) : 'N/A'
+                          p
+                            strong Ngày đặt: 
+                            span= new Date(booking.createdAt).toLocaleDateString('vi-VN')
+                          p
+                            strong Nhận phòng: 
+                            span= new Date(booking.checkIn).toLocaleDateString('vi-VN')
+                          p
+                            strong Trả phòng: 
+                            span= new Date(booking.checkOut).toLocaleDateString('vi-VN')
+                        
+                        .col-md-6
+                          p
+                            strong Trạng thái thanh toán: 
+                            span(class=`badge bg-${booking.paymentStatus === 'paid' ? 'success' : booking.paymentStatus === 'refunded' ? 'warning' : 'danger'}`)= booking.paymentStatus === 'paid' ? 'Đã thanh toán' : booking.paymentStatus === 'refunded' ? 'Đã hoàn tiền' : 'Chưa thanh toán'
+                          p
+                            strong Tổng tiền: 
+                            span= booking.totalPrice ? booking.totalPrice.toLocaleString('vi-VN') + ' đ' : 'N/A'
+                    
+                    .card-footer.bg-white
+                      .d-flex.justify-content-end
+                        if booking.status === 'confirmed' && booking.paymentStatus !== 'paid'
+                          a.btn.btn-success.me-2(href=`/bookings/${booking.id}/payment`) Thanh toán
+                          span.text-muted.me-2.d-flex.align-items-center
+                            i.fas.fa-info-circle.me-1
+                            small Cần thanh toán trước khi check-out
+                        
+                        if booking.status === 'confirmed' && booking.paymentStatus === 'paid' && !booking.checkoutCompleted
+                          a.btn.btn-primary.me-2(href=`/bookings/${booking.id}/checkout`) Check-out
+                        
+                        if booking.status === 'pending' || booking.status === 'confirmed'
+                          form.d-inline(action=`/bookings/${booking.id}/cancel`, method="POST", onsubmit="return confirm('Bạn có chắc chắn muốn hủy đặt phòng này?')")
+                            button.btn.btn-danger.me-2(type="submit") Hủy đặt phòng
+                        
+                        // Updated condition: Allow reviews for any paid booking
+                        if booking.paymentStatus === 'paid'
+                          // Check if booking has a review
+                          if booking.hasReview
+                            a.btn.btn-outline-primary.me-2(href=`/reviews/${booking.id}/find-edit`) Chỉnh sửa đánh giá
+                          else
+                            a.btn.btn-outline-primary.me-2(href=`/reviews/${booking.id}/create`) Đánh giá
+                        
+                        a.btn.btn-info(href=`/bookings/${booking.id}`) Chi tiết
+            else
+              .alert.alert-info
+                p.mb-0 Bạn chưa có lịch sử đặt phòng nào.
+                a.btn.btn-primary.mt-3(href="/rooms") Đặt phòng ngay

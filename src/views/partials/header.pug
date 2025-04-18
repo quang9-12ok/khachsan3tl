@@ -1,0 +1,60 @@
+header
+  nav.navbar.navbar-expand-lg
+    .container
+      a.navbar-brand.d-flex.align-items-center(href="/") 
+        img(src="/images/logo.png", alt="Khách sạn 3TL")
+      
+      button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
+        span.navbar-toggler-icon
+      
+      .collapse.navbar-collapse#navbarNav
+        ul.navbar-nav.me-auto
+          li.nav-item
+            a.nav-link(href="/", class=(currentPath === '/' ? 'active' : '')) Trang chủ
+          li.nav-item
+            a.nav-link(href="/rooms", class=(currentPath && currentPath.startsWith('/rooms') ? 'active' : '')) Phòng
+          li.nav-item
+            a.nav-link(href="/services", class=(currentPath && currentPath.startsWith('/services') ? 'active' : '')) Dịch vụ
+          li.nav-item
+            a.nav-link(href="/about", class=(currentPath === '/about' ? 'active' : '')) Giới thiệu
+          li.nav-item
+            a.nav-link(href="/contact", class=(currentPath === '/contact' ? 'active' : '')) Liên hệ
+        
+        ul.navbar-nav.ms-auto
+          if user
+            li.nav-item.dropdown
+              a.nav-link.dropdown-toggle.d-flex.align-items-center(href="#", role="button", data-bs-toggle="dropdown")
+                if user.avatar
+                  img.rounded-circle.me-2(src=user.avatar, alt=user.name, width="32", height="32")
+                else
+                  .rounded-circle.bg-primary.text-white.d-flex.align-items-center.justify-content-center.me-2(style="width: 32px; height: 32px;")
+                    span= user.name ? user.name.charAt(0).toUpperCase() : 'U'
+                span= user.name
+              ul.dropdown-menu.dropdown-menu-end
+                li
+                  a.dropdown-item(href="/user/profile")
+                    i.fas.fa-user.me-2
+                    | Thông tin cá nhân
+                li
+                  a.dropdown-item(href="/bookings/history")
+                    i.fas.fa-history.me-2
+                    | Lịch sử đặt phòng
+                if user.role === 'admin'
+                  li
+                    a.dropdown-item(href="/admin")
+                      i.fas.fa-cog.me-2
+                      | Quản trị
+                li.dropdown-divider
+                li
+                  a.dropdown-item.logout(href="/auth/logout")
+                    i.fas.fa-sign-out-alt.me-2
+                    | Đăng xuất
+          else
+            li.nav-item
+              a.nav-link(href="/auth/login") 
+                i.fas.fa-sign-in-alt.me-1
+                | Đăng nhập
+            li.nav-item
+              a.nav-link(href="/auth/register") 
+                i.fas.fa-user-plus.me-1
+                | Đăng ký

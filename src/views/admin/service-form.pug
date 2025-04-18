@@ -1,0 +1,134 @@
+extends ../layouts/admin
+
+block content
+  .container-fluid.py-4
+    .row
+      .col-12
+        .card.mb-4
+          .card-header.pb-0.d-flex.justify-content-between.align-items-center
+            h6= isEdit ? 'Chỉnh sửa dịch vụ' : 'Thêm dịch vụ mới'
+            a.btn.btn-sm.btn-secondary(href="/admin/services")
+              i.fas.fa-arrow-left.me-2
+              | Quay lại
+          
+          .card-body
+            if error && error.length > 0
+              .alert.alert-danger
+                = error
+            if success && success.length > 0
+              .alert.alert-success
+                = success
+                
+            // Make sure your form includes the name field with required attribute
+            // Change the form action to use the correct URL pattern
+            // Update the form action to handle both cases safely
+            // Make sure the form has the correct enctype
+            form(action=isNew ? "/admin/services" : (service && service.id ? `/admin/services/${service.id}` : "/admin/services"), method="POST", enctype="multipart/form-data")
+              if !isNew
+                input(type="hidden", name="_method", value="PUT")
+              
+              .mb-3
+                label.form-label(for="name") Tên dịch vụ *
+                input.form-control#name(type="text", name="name", value=service ? service.name : "", required)
+              
+              .col-md-6
+                  .form-group.mb-3
+                    label.form-control-label(for="type") Loại dịch vụ
+                    select#type.form-control(name="type" required)
+                      option(value="" disabled selected=(service ? false : true)) Chọn loại dịch vụ
+                      option(value="spa" selected=(service && service.type === 'spa')) Spa
+                      option(value="restaurant" selected=(service && service.type === 'restaurant')) Nhà hàng
+                      option(value="fitness" selected=(service && service.type === 'fitness')) Phòng tập
+                      option(value="pool" selected=(service && service.type === 'pool')) Hồ bơi
+                      option(value="transport" selected=(service && service.type === 'transport')) Đưa đón
+                      option(value="general" selected=(service && service.type === 'general')) Dịch vụ chung
+              
+              .row.mt-3
+                .col-md-6
+                  .form-group.mb-3
+                    label.form-control-label(for="price") Giá dịch vụ (VND)
+                    input#price.form-control(type="number" name="price" value=service ? service.price : '' required min="0" max="9999999.99" step="0.01")
+                    small.form-text.text-muted Giá tối đa: 9,999,999.99 VND
+                
+                .col-md-6
+                  .form-group.mb-3
+                    label.form-control-label(for="openingHours") Giờ mở cửa
+                    input#openingHours.form-control(type="text" name="openingHours" value=service ? service.openingHours : '')
+                    small.form-text.text-muted Ví dụ: 7:00 - 22:00 hàng ngày
+              
+              .row.mt-3
+                .col-md-12
+                  .form-group.mb-3
+                    label.form-control-label(for="description") Mô tả ngắn
+                    textarea#description.form-control(name="description" rows="3" required)= service ? service.description : ''
+              
+              .row.mt-3
+                .col-md-12
+                  .form-group.mb-3
+                    label.form-control-label(for="details") Chi tiết dịch vụ
+                    textarea#details.form-control(name="details" rows="5")= service ? service.details : ''
+              
+              .row.mt-3
+                .col-md-12
+                  .form-group.mb-3
+                    label.form-control-label(for="image") Hình ảnh
+                    input#image.form-control(type="file" name="image" accept="image/*")
+                    if service && service.image
+                      .mt-2
+                        p Hình ảnh hiện tại:
+                        img.img-fluid.rounded(src=service.image alt=service.name style="max-height: 200px;")
+              
+              .row.mt-4
+                .col-12.text-center
+                  button.btn.btn-primary(type="submit")
+                    i.fas.fa-save.me-2
+                    = isEdit ? 'Cập nhật' : 'Tạo dịch vụ'
+
+block scripts
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form');
+      
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        // Tạo đối tượng FormData từ form
+        const formData = new FormData(form);
+        
+        // Ghi log dữ liệu form để debug
+        console.log('Dữ liệu form đang được gửi:');
+        for (let [key, value] of formData.entries()) {
+          console.log(key, value);
+        }
+        
+        // Xác định phương thức HTTP dựa trên input _method
+        let method = 'POST';
+        if (formData.get('_method') === 'PUT') {
+          method = 'PUT';
+        }
+        
+        // Gửi form sử dụng fetch API
+        fetch(form.action, {
+          method: 'POST', // Vẫn sử dụng POST vì multipart/form-data không hỗ trợ PUT trực tiếp
+          body: formData
+        })
+        .then(response => {
+          if (response.redirected) {
+            window.location.href = response.url;
+          } else {
+            return response.json();
+          }
+        })
+        .then(data => {
+          if (data && data.error) {
+            alert('Lỗi: ' + data.error);
+          } else if (data && data.success) {
+            window.location.href = '/admin/services';
+          }
+        })
+        .catch(error => {
+          console.error('Lỗi khi gửi form:', error);
+          alert('Đã xảy ra lỗi khi gửi form. Vui lòng thử lại.');
+        });
+      });
+    });

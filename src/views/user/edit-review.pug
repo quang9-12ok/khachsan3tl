@@ -1,0 +1,92 @@
+extends ../layouts/main
+
+block content
+  .container
+    // Breadcrumb
+    nav(aria-label="breadcrumb")
+      ol.breadcrumb
+        li.breadcrumb-item
+          a(href="/") Trang chủ
+        li.breadcrumb-item
+          a(href="/user/profile") Tài khoản
+        li.breadcrumb-item
+          a(href="/user/reviews") Đánh giá của tôi
+        li.breadcrumb-item.active(aria-current="page") Chỉnh sửa đánh giá
+    
+    h1.mb-4 Chỉnh sửa đánh giá
+    
+    .row
+      .col-md-8
+        .card.mb-4
+          .card-header.bg-white
+            h5.mb-0 Thông tin đánh giá
+          .card-body
+            .d-flex.mb-4
+              if review.Room.images && review.Room.images.length > 0
+                img.rounded.me-3(src=review.Room.images[0], alt=review.Room.type, width="100", height="80", style="object-fit: cover;")
+              else
+                img.rounded.me-3(src="/images/room-placeholder.jpg", alt=review.Room.type, width="100", height="80")
+              
+              div
+                h5.mb-1 #{review.Room.type} - Phòng #{review.Room.room_number}
+                p.text-muted.mb-0 Đánh giá vào ngày #{new Date(review.createdAt).toLocaleDateString('vi-VN')}
+            
+            form(action=`/reviews/${review.id}/update`, method="POST")
+              .mb-3
+                label.form-label Đánh giá của bạn
+                .rating-stars.mb-2
+                  - for (var i = 5; i >= 1; i--)
+                    input.star-rating(type="radio", id=`star${i}`, name="rating", value=i, checked=review.rating === i)
+                    label(for=`star${i}`)
+                      i.fas.fa-star
+              
+              .mb-3
+                label.form-label(for="comment") Nhận xét
+                textarea.form-control#comment(name="comment", rows="5", required) #{review.comment}
+              
+              .d-flex.justify-content-between
+                a.btn.btn-outline-secondary(href="/user/reviews")
+                  i.fas.fa-arrow-left.me-2
+                  | Quay lại
+                
+                button.btn.btn-primary(type="submit")
+                  i.fas.fa-save.me-2
+                  | Lưu thay đổi
+      
+      .col-md-4
+        .card.mb-4
+          .card-header.bg-white
+            h5.mb-0 Hướng dẫn
+          .card-body
+            p Đánh giá của bạn giúp những khách hàng khác có thêm thông tin khi lựa chọn phòng.
+            
+            ul.mb-0
+              li Hãy chia sẻ trải nghiệm thực tế của bạn
+              li Đánh giá chi tiết về các tiện nghi, dịch vụ
+              li Tránh sử dụng ngôn từ thiếu tôn trọng
+              li Không chia sẻ thông tin cá nhân
+
+block styles
+  style.
+    .rating-stars {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+    }
+    
+    .rating-stars input {
+      display: none;
+    }
+    
+    .rating-stars label {
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #ddd;
+      margin-right: 5px;
+    }
+    
+    .rating-stars label:hover,
+    .rating-stars label:hover ~ label,
+    .rating-stars input:checked ~ label {
+      color: #ffc107;
+    }

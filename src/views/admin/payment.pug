@@ -1,0 +1,73 @@
+extends ../layouts/admin
+
+block content
+  .container-fluid.py-4
+    .row
+      .col-12
+        .card.mb-4
+          .card-header.pb-0
+            .d-flex.justify-content-between.align-items-center
+              h6 Xử lý thanh toán
+              a.btn.btn-sm.btn-primary(href='/admin/bookings') Quay lại
+          .card-body.px-0.pt-0.pb-2
+            .p-4
+              .row
+                .col-md-6
+                  h5.mb-3 Thông tin đặt phòng
+                  p
+                    strong Mã đặt phòng: 
+                    span= booking.bookingCode || 'N/A'
+                  p
+                    strong Khách hàng: 
+                    span= booking.User ? booking.User.name : 'N/A'
+                  p
+                    strong Phòng: 
+                    span= booking.Room ? (booking.Room.type + ' - ' + booking.Room.room_number) : 'N/A'
+                  p
+                    strong Nhận phòng: 
+                    span= new Date(booking.checkIn).toLocaleDateString('vi-VN')
+                  p
+                    strong Trả phòng: 
+                    span= new Date(booking.checkOut).toLocaleDateString('vi-VN')
+                  p
+                    strong Tổng tiền: 
+                    span= booking.totalPrice ? booking.totalPrice.toLocaleString('vi-VN') + ' đ' : 'N/A'
+                
+                .col-md-6
+                  h5.mb-3 Xử lý thanh toán
+                  form(action=`/admin/bookings/${booking.id}/payment`, method="POST")
+                    .mb-3
+                      label.form-label(for="paymentMethod") Phương thức thanh toán
+                      select.form-select(id="paymentMethod", name="paymentMethod", required)
+                        option(value="") Chọn phương thức thanh toán
+                        option(value="cash") Tiền mặt
+                        option(value="card") Thẻ tín dụng/ghi nợ
+                        option(value="transfer") Chuyển khoản
+                    
+                    .mb-3
+                      label.form-label(for="paymentAmount") Số tiền thanh toán
+                      input.form-control(type="number", id="paymentAmount", name="paymentAmount", value=booking.totalPrice, required)
+                    
+                    .mb-3
+                      label.form-label(for="paymentNote") Ghi chú
+                      textarea.form-control(id="paymentNote", name="paymentNote", rows="3")
+                    
+                    button.btn.btn-success.w-100(type="submit") Xác nhận thanh toán
+
+block scripts
+  script.
+    // Validate payment form
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const paymentMethod = document.getElementById('paymentMethod').value;
+      const paymentAmount = document.getElementById('paymentAmount').value;
+      
+      if (!paymentMethod) {
+        e.preventDefault();
+        alert('Vui lòng chọn phương thức thanh toán');
+      }
+      
+      if (!paymentAmount || paymentAmount <= 0) {
+        e.preventDefault();
+        alert('Vui lòng nhập số tiền thanh toán hợp lệ');
+      }
+    });

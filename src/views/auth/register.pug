@@ -1,0 +1,41 @@
+extends ../layouts/main
+
+block content
+  .container.my-5
+    .row.justify-content-center
+      .col-md-6
+        .card
+          .card-header.bg-primary.text-white
+            h3.mb-0 Đăng ký tài khoản
+          .card-body
+            if error && error.length > 0
+              .alert.alert-danger
+                = error
+            
+            form(action="/auth/register" method="POST")
+              .mb-3
+                label.form-label(for="username") Tên đăng nhập
+                input.form-control#username(type="text" name="username" required)
+              
+              .mb-3
+                label.form-label(for="email") Email
+                input.form-control#email(type="email" name="email" required)
+              
+              .mb-3
+                label.form-label(for="password") Mật khẩu
+                input.form-control#password(type="password" name="password" required)
+              
+              .mb-3
+                label.form-label(for="fullname") Họ và tên
+                input.form-control#fullname(type="text" name="fullname" required)
+              
+              .mb-3
+                label.form-label(for="phone") Số điện thoại
+                input.form-control#phone(type="text" name="phone" required)
+              
+              button.btn.btn-primary.w-100(type="submit") Đăng ký
+          
+          .card-footer.text-center
+            p.mb-0
+              | Đã có tài khoản? 
+              a(href="/auth/login") Đăng nhập ngay

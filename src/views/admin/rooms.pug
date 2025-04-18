@@ -1,0 +1,144 @@
+extends ../layouts/admin
+
+block content
+  .container-fluid.py-4
+    .row
+      .col-12
+        .card.mb-4
+          .card-header.pb-0.d-flex.justify-content-between.align-items-center
+            h6 Quản lý phòng
+            a.btn.btn-sm.btn-primary(href="/admin/rooms/create")
+              i.fas.fa-plus.me-2
+              | Thêm phòng mới
+          
+          .card-body.px-0.pt-0.pb-2
+            if error && error.length > 0
+              .alert.alert-danger.mx-4
+                = error
+            if success && success.length > 0
+              .alert.alert-success.mx-4
+                = success
+                
+            .table-responsive.p-0
+              table.table.align-items-center.mb-0
+                thead
+                  tr
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 ID
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Số phòng
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 HÌNH ẢNH
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Loại phòng
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Giá (VND)
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Trạng thái
+                    th.text-uppercase.text-secondary.text-xxs.font-weight-bolder.opacity-7 Thao tác
+                
+                tbody
+                  if rooms && rooms.length > 0
+                    each room in rooms
+                      tr
+                        td
+                          .d-flex.px-3.py-1
+                            .d-flex.flex-column.justify-content-center
+                              h6.mb-0.text-sm= room.id
+                        td
+                          .d-flex.px-3.py-1
+                            .d-flex.flex-column.justify-content-center
+                              h6.mb-0.text-sm= room.room_number
+                        // Add image column
+                        // Look for the table section that displays room information
+                        // Find the HÌNH ẢNH column and update it to:
+                        
+                        td.align-middle
+                          if room.image
+                            img.img-thumbnail(src=room.image alt=`Room ${room.room_number}` style="max-height: 80px; max-width: 120px;")
+                          else
+                            span Không có ảnh
+                        td
+                          p.text-xs.font-weight-bold.mb-0= room.type
+                        td
+                          p.text-xs.font-weight-bold.mb-0= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(room.price)
+                        td
+                          span(class=`badge bg-${room.status === 'available' ? 'success' : (room.status === 'booked' ? 'warning' : 'danger')}`)= room.status
+                        td
+                          .btn-group
+                            a.btn.btn-sm.btn-info(href=`/admin/rooms/${room.id}` title="Xem chi tiết")
+                              i.fas.fa-eye
+                            a.btn.btn-sm.btn-primary(href=`/admin/rooms/${room.id}/edit` title="Chỉnh sửa")
+                              i.fas.fa-edit
+                            button.btn.btn-sm.btn-danger.delete-room(data-id=room.id data-bs-toggle="modal" data-bs-target="#deleteRoomModal" title="Xóa")
+                              i.fas.fa-trash
+                  else
+                    tr
+                      td.text-center(colspan="6") Không có phòng nào
+
+  // Delete Room Modal
+  #deleteRoomModal.modal.fade(tabindex="-1" aria-labelledby="deleteRoomModalLabel" aria-hidden="true")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h5#deleteRoomModalLabel.modal-title Xác nhận xóa
+          button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+        .modal-body
+          p Bạn có chắc chắn muốn xóa phòng này không?
+        .modal-footer
+          button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Hủy
+          button#confirmDeleteRoom.btn.btn-danger(type="button") Xóa
+
+block scripts
+  script.
+    // Handle delete room
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if we have a success parameter in the URL
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('updated') || urlParams.has('success')) {
+        console.log('Detected update parameter, refreshing page...');
+        // Remove the parameter and refresh the page
+        const url = window.location.href.split('?')[0];
+        window.history.replaceState({}, document.title, url);
+        setTimeout(() => {
+          window.location.reload(true); // Force reload from server
+        }, 500);
+      }
+      
+      let roomId;
+      
+      // Get room ID when delete button is clicked
+      const deleteButtons = document.querySelectorAll('.delete-room');
+      deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          roomId = this.getAttribute('data-id');
+        });
+      });
+      
+      // Handle confirm delete
+      const confirmDeleteButton = document.getElementById('confirmDeleteRoom');
+      if (confirmDeleteButton) {
+        confirmDeleteButton.addEventListener('click', function() {
+          if (roomId) {
+            // Send DELETE request
+            fetch(`/admin/rooms/${roomId}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteRoomModal'));
+                modal.hide();
+                
+                // Reload page to show updated list
+                window.location.reload();
+              } else {
+                alert(data.message || 'Đã xảy ra lỗi khi xóa phòng');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('Đã xảy ra lỗi khi xóa phòng');
+            });
+          }
+        });
+      }
+    });

@@ -1,0 +1,132 @@
+extends ../layouts/main
+
+block content
+  .container
+    // Breadcrumb
+    nav(aria-label="breadcrumb")
+      ol.breadcrumb
+        li.breadcrumb-item
+          a(href="/") Trang chủ
+        li.breadcrumb-item.active(aria-current="page") Kết quả tìm kiếm phòng
+
+    h1.mb-4 Kết quả tìm kiếm phòng
+
+    // Search filters
+    .card.mb-4
+      .card-body
+        form(action="/rooms/search", method="GET")
+          input(type="hidden", name="checkIn", value=searchParams.checkIn)
+          input(type="hidden", name="checkOut", value=searchParams.checkOut)
+          input(type="hidden", name="guests", value=searchParams.guests)
+          input(type="hidden", name="days", value=searchParams.days)
+          
+          .row
+            .col-md-3.mb-3
+              label.form-label(for="roomType") Loại phòng
+              select.form-select#roomType(name="roomType", onchange="this.form.submit()")
+                option(value="", selected=!searchParams.roomType) Tất cả
+                option(value="standard", selected=searchParams.roomType === 'standard') Phòng tiêu chuẩn
+                option(value="deluxe", selected=searchParams.roomType === 'deluxe') Phòng cao cấp
+                option(value="suite", selected=searchParams.roomType === 'suite') Phòng suite
+            
+            .col-md-3.mb-3
+              label.form-label(for="priceRange") Khoảng giá
+              select.form-select#priceRange(name="priceRange", onchange="this.form.submit()")
+                option(value="", selected=!searchParams.priceRange) Tất cả
+                option(value="0-500000", selected=searchParams.priceRange === '0-500000') Dưới 500.000đ
+                option(value="500000-1000000", selected=searchParams.priceRange === '500000-1000000') 500.000đ - 1.000.000đ
+                option(value="1000000-2000000", selected=searchParams.priceRange === '1000000-2000000') 1.000.000đ - 2.000.000đ
+                option(value="2000000-", selected=searchParams.priceRange === '2000000-') Trên 2.000.000đ
+            
+            .col-md-3.mb-3
+              label.form-label(for="sortBy") Sắp xếp theo
+              select.form-select#sortBy(name="sortBy", onchange="this.form.submit()")
+                option(value="price_asc", selected=searchParams.sortBy === 'price_asc') Giá: Thấp đến cao
+                option(value="price_desc", selected=searchParams.sortBy === 'price_desc') Giá: Cao đến thấp
+                option(value="rating_desc", selected=searchParams.sortBy === 'rating_desc') Đánh giá: Cao nhất
+            
+            .col-md-3.mb-3
+              label.form-label(for="amenities") Tiện nghi
+              select.form-select#amenities(name="amenities", onchange="this.form.submit()")
+                option(value="", selected=!searchParams.amenities) Tất cả
+                option(value="wifi", selected=searchParams.amenities === 'wifi') Wifi
+                option(value="ac", selected=searchParams.amenities === 'ac') Điều hòa
+                option(value="tv", selected=searchParams.amenities === 'tv') TV
+                option(value="minibar", selected=searchParams.amenities === 'minibar') Minibar
+
+    // Search summary
+    .alert.alert-info.mb-4
+      .d-flex.justify-content-between.align-items-center
+        div
+          strong Thông tin tìm kiếm: 
+          | Ngày #{new Date(searchParams.checkIn).toLocaleDateString('vi-VN')} - #{new Date(searchParams.checkOut).toLocaleDateString('vi-VN')} 
+          | (#{searchParams.days} đêm), #{searchParams.guests} khách
+        div
+          | Tìm thấy #{rooms.length} phòng phù hợp
+
+    if rooms.length === 0
+      .alert.alert-warning
+        h4.alert-heading Không tìm thấy phòng phù hợp!
+        p Vui lòng thử lại với các tiêu chí tìm kiếm khác hoặc liên hệ với chúng tôi để được hỗ trợ.
+        hr
+        p.mb-0
+          a.btn.btn-outline-primary.me-2(href="/rooms") Xem tất cả phòng
+          a.btn.btn-outline-secondary(href="/contact") Liên hệ hỗ trợ
+    else
+      .row
+        each room in rooms
+          .col-md-6.mb-4
+            .card.h-100.shadow-sm
+              if room.images && room.images.length > 0
+                img.card-img-top(src=room.images[0], alt=room.type, style="height: 200px; object-fit: cover;")
+              else
+                img.card-img-top(src="/images/room-placeholder.jpg", alt=room.type, style="height: 200px; object-fit: cover;")
+              
+              .card-body
+                h5.card-title #{room.type} - Phòng #{room.room_number}
+                
+                .d-flex.justify-content-between.align-items-center.mb-2
+                  span.badge.bg-primary.rounded-pill #{formatCurrency ? formatCurrency(room.price) : room.price.toLocaleString('vi-VN') + ' VND'} / đêm
+                  if room.discount > 0
+                    span.badge.bg-danger.rounded-pill Giảm #{formatCurrency ? formatCurrency(room.discount) : room.discount.toLocaleString('vi-VN') + ' VND'}
+                
+                p.card-text.mb-2 #{room.description || 'Không có mô tả'}
+                
+                .d-flex.mb-3
+                  small.text-muted
+                    i.fas.fa-user.me-1
+                    | #{room.capacity} người
+                  small.text-muted.ms-3
+                    i.fas.fa-bed.me-1
+                    | #{room.beds || 1} giường
+                  if room.area
+                    small.text-muted.ms-3
+                      i.fas.fa-vector-square.me-1
+                      | #{room.area} m²
+                
+                .d-grid.gap-2
+                  a.btn.btn-primary(href=`/rooms/${room.id}?checkIn=${searchParams.checkIn}&checkOut=${searchParams.checkOut}&guests=${searchParams.guests}`) Xem chi tiết
+                  a.btn.btn-outline-success(href=`/bookings/create?roomId=${room.id}&checkIn=${searchParams.checkIn}&checkOut=${searchParams.checkOut}&guests=${searchParams.guests}`) Đặt ngay
+
+      // Pagination if needed
+      if pagination && pagination.totalPages > 1
+        nav.mt-4(aria-label="Page navigation")
+          ul.pagination.justify-content-center
+            if pagination.currentPage > 1
+              li.page-item
+                a.page-link(href=`/rooms/search?${paginationUrl}&page=${pagination.currentPage - 1}`) Trước
+            
+            - for (let i = 1; i <= pagination.totalPages; i++)
+              li.page-item(class=i === pagination.currentPage ? 'active' : '')
+                a.page-link(href=`/rooms/search?${paginationUrl}&page=${i}`)= i
+            
+            if pagination.currentPage < pagination.totalPages
+              li.page-item
+                a.page-link(href=`/rooms/search?${paginationUrl}&page=${pagination.currentPage + 1}`) Tiếp
+
+block scripts
+  script.
+    // Initialize date pickers with the search values
+    document.addEventListener('DOMContentLoaded', function() {
+      // Any additional JavaScript for the search results page
+    });

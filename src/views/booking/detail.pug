@@ -1,0 +1,92 @@
+extends ../layouts/main
+
+block content
+  .container
+    if !booking
+      .alert.alert-danger Không tìm thấy thông tin đặt phòng
+    else
+      // Breadcrumb
+      nav(aria-label="breadcrumb")
+        ol.breadcrumb
+          li.breadcrumb-item
+            a(href="/") Trang chủ
+          li.breadcrumb-item
+            a(href="/booking/history") Lịch sử đặt phòng
+          li.breadcrumb-item.active(aria-current="page") Chi tiết đặt phòng
+      
+      .card.mb-4
+        .card-header.bg-white
+          .d-flex.justify-content-between.align-items-center
+            h2.mb-0 Chi tiết đặt phòng ##{booking.bookingCode}
+            case booking.status
+              when 'pending'
+                span.badge.bg-warning.fs-6 Chờ xác nhận
+              when 'confirmed'
+                span.badge.bg-success.fs-6 Đã xác nhận
+              when 'cancelled'
+                span.badge.bg-danger.fs-6 Đã hủy
+              when 'completed'
+                span.badge.bg-info.fs-6 Đã hoàn thành
+              default
+                span.badge.bg-secondary.fs-6 #{booking.status}
+        
+        .card-body
+          .row
+            .col-md-6
+              h5.mb-3 Thông tin đặt phòng
+              table.table
+                tbody
+                  tr
+                    th(scope="row") Mã đặt phòng
+                    td #{booking.bookingCode}
+                  tr
+                    th(scope="row") Ngày đặt
+                    td #{new Date(booking.createdAt).toLocaleString('vi-VN')}
+                  tr
+                    th(scope="row") Ngày nhận phòng
+                    td #{new Date(booking.checkIn).toLocaleDateString('vi-VN')}
+                  tr
+                    th(scope="row") Ngày trả phòng
+                    td #{new Date(booking.checkOut).toLocaleDateString('vi-VN')}
+                  tr
+                    th(scope="row") Số đêm
+                    td #{booking.nights} đêm
+                  tr
+                    th(scope="row") Số khách
+                    td #{booking.guests} người
+                  if booking.notes
+                    tr
+                      th(scope="row") Ghi chú
+                      td #{booking.notes}
+            
+            .col-md-6
+              h5.mb-3 Thông tin phòng
+              if booking.room
+                .card.mb-3
+                  if booking.room.images && booking.room.images.length > 0
+                    img.card-img-top(src=booking.room.images[0], alt=booking.room.type)
+                  .card-body
+                    h5.card-title #{booking.room.type} - Phòng #{booking.room.roomNumber}
+                    p.card-text #{booking.room.description}
+                    a.btn.btn-outline-primary.btn-sm(href=`/rooms/${booking.room.id}`) Xem chi tiết phòng
+              else
+                .alert.alert-warning Không tìm thấy thông tin phòng
+          
+          hr.my-4
+          
+          h5.mb-3 Chi tiết thanh toán
+          table.table
+            tbody
+              tr
+                th(scope="row") Giá phòng
+                td.text-end #{booking.roomPrice ? (formatCurrency ? formatCurrency(booking.roomPrice) : booking.roomPrice.toLocaleString('vi-VN') + ' VND') : 'N/A'} / đêm
+              tr
+                th(scope="row") Số đêm
+                td.text-end #{booking.nights} đêm
+              if booking.discount > 0
+                tr
+                  th(scope="row") Giảm giá
+                  td.text-end -#{formatCurrency ? formatCurrency(booking.discount) : booking.discount.toLocaleString('vi-VN') + ' VND'}
+              tr
+                th(scope="row") Tổng cộng
+                td.text-end.fw-bold.fs-5.text-primary #{formatCurrency ? formatCurrency(booking.totalAmount) : booking.totalAmount.toLocaleString('vi-VN') + ' VND'}

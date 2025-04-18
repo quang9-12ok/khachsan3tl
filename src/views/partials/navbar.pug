@@ -1,0 +1,50 @@
+nav.navbar.navbar-expand-lg.navbar-dark.bg-primary
+  .container
+    a.navbar-brand(href="/") 
+      i.fas.fa-hotel.me-2
+      | Khách sạn 3TL
+    
+    button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
+      span.navbar-toggler-icon
+    
+    #navbarNav.collapse.navbar-collapse
+      ul.navbar-nav.me-auto
+        li.nav-item
+          a.nav-link(href="/") Trang chủ
+        li.nav-item
+          a.nav-link(href="/rooms") Phòng
+        li.nav-item
+          a.nav-link(href="/services") Dịch vụ
+        li.nav-item
+          a.nav-link(href="/about") Giới thiệu
+        li.nav-item
+          a.nav-link(href="/contact") Liên hệ
+      
+      ul.navbar-nav
+        if user
+          li.nav-item.dropdown
+            a.nav-link.dropdown-toggle(href="#", role="button", data-bs-toggle="dropdown")
+              i.fas.fa-user.me-1
+              | #{user.name}
+            ul.dropdown-menu
+              li
+                a.dropdown-item(href="/user/profile")
+                  i.fas.fa-id-card.me-2
+                  | Thông tin cá nhân
+              li
+                // Add this to your dropdown menu where the "Lịch sử đặt phòng" option appears
+                a.dropdown-item(href="/bookings/my") Lịch sử đặt phòng
+              li.dropdown-divider
+              li
+                a.dropdown-item(href="/auth/logout")
+                  i.fas.fa-sign-out-alt.me-2
+                  | Đăng xuất
+        else
+          li.nav-item
+            a.nav-link(href="/auth/login") 
+              i.fas.fa-sign-in-alt.me-1
+              | Đăng nhập
+          li.nav-item
+            a.nav-link(href="/auth/register") 
+              i.fas.fa-user-plus.me-1
+              | Đăng ký
